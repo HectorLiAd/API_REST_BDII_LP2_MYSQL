@@ -9,6 +9,7 @@ type Repository interface {
 	GetPersonByID(param *getPersonByIDRequest) (*Person, error)
 	GetPersons(params *getPersonsRequest) ([]*Person, error)
 	GetTotalPersons() (int, error)
+	InsertPerson(params *addPersonRequest) (int, error)
 }
 
 type repository struct {
@@ -81,4 +82,17 @@ func (repo *repository) GetTotalPersons() (int, error) {
 
 	err := row.Scan(&total)
 	return total, err
+}
+
+func (repo *repository) InsertPerson(params *addPersonRequest) (int, error) {
+	const queryStr = `INSERT INTO PERSONA (NOMBRE, APELLIDO_P, APELLIDO_M, GENERO, DNI, FECHA_NACIMIENTO)
+						VALUES (?, ?, ?, ?, ?, ?);`
+	result, err := repo.db.Exec(queryStr, params.Nombre, params.ApellidoPaterno,
+		params.ApellidoMaterno, params.Genero, params.Dni,
+		params.FechaNacimiento)
+	if err != nil {
+		return -1, err
+	}
+	id, _ := result.LastInsertId()
+	return int(id), err
 }

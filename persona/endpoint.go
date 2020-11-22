@@ -17,6 +17,16 @@ type getPersonsRequest struct {
 	Offset int //DE QUE NUMERO DE FILA INICIARA LA CONSULTA
 }
 
+/*addPersonRequest para crear al nuevo usuario*/
+type addPersonRequest struct { //
+	Nombre          string
+	ApellidoPaterno string
+	ApellidoMaterno string
+	Genero          string
+	Dni             string
+	FechaNacimiento string
+}
+
 func makeGetPersonByIDEndPoint(s Service) endpoint.Endpoint {
 	getPersonByID := func(ctx context.Context, request interface{}) (interface{}, error) {
 		rep := request.(getPersonByIDRequest)
@@ -33,4 +43,13 @@ func makeGetPersonsEndPoint(s Service) endpoint.Endpoint {
 		return result, err
 	}
 	return getPersonsEndPoint
+}
+
+func makeAddPersonEndpoint(s Service) endpoint.Endpoint {
+	addPersonEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(addPersonRequest)
+		addPerson, err := s.InsertPerson(&req)
+		return addPerson, err
+	}
+	return addPersonEndpoint
 }

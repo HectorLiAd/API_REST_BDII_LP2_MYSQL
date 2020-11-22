@@ -1,9 +1,15 @@
 package persona
 
+import (
+	"errors"
+	"strconv"
+)
+
 /*Service interface para poder usarlo de forma nativa desde el main*/
 type Service interface {
 	GetPersonByID(param *getPersonByIDRequest) (*Person, error)
 	GetPersons(params *getPersonsRequest) (*PersonList, error)
+	InsertPerson(params *addPersonRequest) (*StatusPerson, error)
 }
 
 type service struct {
@@ -37,4 +43,22 @@ func (s *service) GetPersons(params *getPersonsRequest) (*PersonList, error) {
 		Data:         persons,
 		TotalRecords: totalPersons,
 	}, err
+}
+
+func (s *service) InsertPerson(params *addPersonRequest) (*StatusPerson, error) {
+	personaID, err := s.repo.InsertPerson(params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var mensajeEstado string
+	if personaID <= 0 {
+		return nil, errors.New("no se pudo registrar a la persona")
+	}
+	mensajeEstado = "Cod " + strconv.Itoa(personaID) + " registrado corractamente"
+	estadoInsert := StatusPerson{
+		PersonaID: mensajeEstado,
+	}
+	return &estadoInsert, err
 }

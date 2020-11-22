@@ -30,6 +30,14 @@ func MakeHTTPHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodPost, "/paginated", getPersonHandler)
 
+	//Agregar a una persona
+	addPersonHandler := kithttp.NewServer(
+		makeAddPersonEndpoint(s),
+		addPersonRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodPost, "/", addPersonHandler)
+
 	return r
 }
 
@@ -43,5 +51,11 @@ func getPersonByIDRequestDecoder(context context.Context, r *http.Request) (inte
 func getPersonsRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	request := getPersonsRequest{}
 	err := json.NewDecoder(r.Body).Decode(&request) //EL REQUEST QUE QUEREMOS DECODIFICAR ESTA EN BADY
+	return request, err
+}
+
+func addPersonRequestDecoder(_ context.Context, r *http.Request) (interface{}, error) {
+	request := addPersonRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
 	return request, err
 }

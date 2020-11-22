@@ -16,3 +16,8 @@ type PersonList struct {
 	Data         []*Person `json:"data"`
 	TotalRecords int       `json:"totalRecords"`
 }
+
+/*StatusPerson muestra la fila que se inserto */
+type StatusPerson struct {
+	PersonaID string `json:"PersonaID"`
+}
