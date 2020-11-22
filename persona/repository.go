@@ -7,6 +7,8 @@ import (
 /*Repository para llamar manilpular la BD*/
 type Repository interface {
 	GetPersonByID(param *getPersonByIDRequest) (*Person, error)
+	GetPersons(params *getPersonsRequest) ([]*Person, error)
+	GetTotalPersons() (int, error)
 }
 
 type repository struct {
@@ -21,8 +23,8 @@ func NewRepository(dataBaseConnection *sql.DB) Repository {
 }
 
 func (repo *repository) GetPersonByID(param *getPersonByIDRequest) (*Person, error) {
-	const sql = `SELECT * FROM PERSONA WHERE PERSONA_ID = ? AND ESTADO <> 0`
-	row := repo.db.QueryRow(sql, param.PersonaID)
+	const queryStr = `SELECT PERSONA_ID, NOMBRE, APELLIDO_P, APELLIDO_M, GENERO, DNI, FECHA_NACIMIENTO FROM PERSONA WHERE PERSONA_ID = ? AND ESTADO <> 0`
+	row := repo.db.QueryRow(queryStr, param.PersonaID)
 	var fechaNac []uint8
 	persona := &Person{}
 	err := row.Scan(
@@ -33,11 +35,50 @@ func (repo *repository) GetPersonByID(param *getPersonByIDRequest) (*Person, err
 		&persona.Genero,
 		&persona.Dni,
 		&fechaNac,
-		&persona.Estado,
 	)
 	// year, month, day := fecha_nac.Date()
 	// fmt.Printf("Date : [%d]year : [%d]month : [%d]day \n", year, month, day)
 	// persona.FechaNacimiento = fechaNac.Format("02/01/2006")
 	persona.FechaNacimiento = string(fechaNac)
 	return persona, err
+}
+
+func (repo *repository) GetPersons(params *getPersonsRequest) ([]*Person, error) {
+	const sql = `
+	SELECT PERSONA_ID, NOMBRE, APELLIDO_P, APELLIDO_M, GENERO, DNI, FECHA_NACIMIENTO
+	FROM PERSONA WHERE ESTADO <> 0 limit ? offset ?`
+	result, err := repo.db.Query(sql, params.Limit, params.Offset)
+	var fechaNac []uint8
+	if err != nil {
+		return nil, nil
+	}
+
+	var persons []*Person
+	for result.Next() {
+		persona := &Person{}
+		err := result.Scan(
+			&persona.ID,
+			&persona.Nombre,
+			&persona.ApellidoPaterno,
+			&persona.ApellidoMaterno,
+			&persona.Genero,
+			&persona.Dni,
+			&fechaNac,
+		)
+		if err != nil {
+			return nil, err
+		}
+		persona.FechaNacimiento = string(fechaNac)
+		persons = append(persons, persona)
+	}
+	return persons, err
+}
+
+func (repo *repository) GetTotalPersons() (int, error) {
+	const queryStr = `SELECT COUNT(PERSONA_ID) FROM PERSONA WHERE ESTADO <> 0`
+	var total int
+	row := repo.db.QueryRow(queryStr)
+
+	err := row.Scan(&total)
+	return total, err
 }

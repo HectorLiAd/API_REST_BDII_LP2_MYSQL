@@ -9,5 +9,10 @@ type Person struct {
 	Genero          string `json:"Genero"`
 	Dni             string `json:"dni"`
 	FechaNacimiento string `json:"fecha_nacimiento"`
-	Estado          int    `json:"estado"`
+}
+
+/*PersonList mostrar la lista de personas*/
+type PersonList struct {
+	Data         []*Person `json:"data"`
+	TotalRecords int       `json:"totalRecords"`
 }

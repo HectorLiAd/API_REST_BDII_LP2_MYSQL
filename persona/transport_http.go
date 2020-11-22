@@ -2,6 +2,7 @@ package persona
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -21,6 +22,14 @@ func MakeHTTPHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodGet, "/{id}", getPersonByHandler)
 
+	//Obtener personas paginadas
+	getPersonHandler := kithttp.NewServer(
+		makeGetPersonsEndPoint(s),
+		getPersonsRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodPost, "/paginated", getPersonHandler)
+
 	return r
 }
 
@@ -29,4 +38,10 @@ func getPersonByIDRequestDecoder(context context.Context, r *http.Request) (inte
 	return getPersonByIDRequest{
 		PersonaID: personaID,
 	}, nil
+}
+
+func getPersonsRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	request := getPersonsRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request) //EL REQUEST QUE QUEREMOS DECODIFICAR ESTA EN BADY
+	return request, err
 }
