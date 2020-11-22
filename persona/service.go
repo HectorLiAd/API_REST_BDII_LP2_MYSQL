@@ -10,6 +10,7 @@ type Service interface {
 	GetPersonByID(param *getPersonByIDRequest) (*Person, error)
 	GetPersons(params *getPersonsRequest) (*PersonList, error)
 	InsertPerson(params *addPersonRequest) (*StatusPerson, error)
+	UpdatePerson(params *updatePersonRequest) (*StatusPerson, error)
 }
 
 type service struct {
@@ -52,13 +53,24 @@ func (s *service) InsertPerson(params *addPersonRequest) (*StatusPerson, error) 
 		return nil, err
 	}
 
-	var mensajeEstado string
 	if personaID <= 0 {
 		return nil, errors.New("no se pudo registrar a la persona")
 	}
-	mensajeEstado = "Cod " + strconv.Itoa(personaID) + " registrado corractamente"
+
 	estadoInsert := StatusPerson{
-		PersonaID: mensajeEstado,
+		PersonaID: "Cod " + strconv.Itoa(personaID) + " registrado corractamente",
+	}
+	return &estadoInsert, err
+}
+
+func (s *service) UpdatePerson(params *updatePersonRequest) (*StatusPerson, error) {
+	personaID, err := s.repo.UpdatePerson(params)
+
+	if err != nil {
+		return nil, err
+	}
+	estadoInsert := StatusPerson{
+		PersonaID: "Cod " + strconv.Itoa(personaID) + " actualizado corractamente",
 	}
 	return &estadoInsert, err
 }

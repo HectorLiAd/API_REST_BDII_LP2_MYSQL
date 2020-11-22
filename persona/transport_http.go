@@ -38,6 +38,14 @@ func MakeHTTPHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodPost, "/", addPersonHandler)
 
+	//Actualizar personas
+	updatePersonHandler := kithttp.NewServer(
+		makeUpdatePersonEndpoint(s),
+		updatePersonRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodPut, "/", updatePersonHandler)
+
 	return r
 }
 
@@ -56,6 +64,13 @@ func getPersonsRequestDecoder(context context.Context, r *http.Request) (interfa
 
 func addPersonRequestDecoder(_ context.Context, r *http.Request) (interface{}, error) {
 	request := addPersonRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
+	return request, err
+}
+
+func updatePersonRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	request := updatePersonRequest{}
+	//LAS PROPIEDADES DEL BODY REQUEST SE MAPEAN PARA PODER OBTENER EL FORMATO DE NUESTRA ESTRUCTURA INDICADA
 	err := json.NewDecoder(r.Body).Decode(&request)
 	return request, err
 }
