@@ -108,7 +108,7 @@ func (repo *repository) UpdatePerson(params *updatePersonRequest) (int, error) {
 		GENERO = ?, 
 		DNI = ?, 
 		FECHA_NACIMIENTO = ? 
-		WHERE PERSONA_ID = ? AND ESTADO <> 0
+		WHERE PERSONA_ID = ? AND ESTADO = 1
 	`
 	result, err := repo.db.Exec(queryStr, params.Nombre, params.ApellidoPaterno,
 		params.ApellidoMaterno, params.Genero, params.Dni,
