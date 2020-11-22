@@ -11,6 +11,7 @@ type Repository interface {
 	GetTotalPersons() (int, error)
 	InsertPerson(params *addPersonRequest) (int, error)
 	UpdatePerson(params *updatePersonRequest) (int, error)
+	DeletePerson(param *deletePersonRequest) (int, error)
 }
 
 type repository struct {
@@ -107,11 +108,18 @@ func (repo *repository) UpdatePerson(params *updatePersonRequest) (int, error) {
 		GENERO = ?, 
 		DNI = ?, 
 		FECHA_NACIMIENTO = ? 
-		WHERE PERSONA_ID = ?
+		WHERE PERSONA_ID = ? AND ESTADO <> 0
 	`
-	_, err := repo.db.Exec(queryStr, params.Nombre, params.ApellidoPaterno,
+	result, err := repo.db.Exec(queryStr, params.Nombre, params.ApellidoPaterno,
 		params.ApellidoMaterno, params.Genero, params.Dni,
 		params.FechaNacimiento, params.ID)
+	rowAfected, _ := result.RowsAffected()
+	return int(rowAfected), err
+}
 
-	return params.ID, err
+func (repo *repository) DeletePerson(param *deletePersonRequest) (int, error) {
+	const query = `UPDATE PERSONA SET ESTADO = 0 WHERE PERSONA_ID = ? AND ESTADO <> 0`
+	result, err := repo.db.Exec(query, param.PersonaID)
+	rowAfected, _ := result.RowsAffected()
+	return int(rowAfected), err
 }

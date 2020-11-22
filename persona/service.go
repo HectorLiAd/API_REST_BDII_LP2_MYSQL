@@ -11,6 +11,7 @@ type Service interface {
 	GetPersons(params *getPersonsRequest) (*PersonList, error)
 	InsertPerson(params *addPersonRequest) (*StatusPerson, error)
 	UpdatePerson(params *updatePersonRequest) (*StatusPerson, error)
+	DeletePerson(param *deletePersonRequest) (*StatusPerson, error)
 }
 
 type service struct {
@@ -64,13 +65,34 @@ func (s *service) InsertPerson(params *addPersonRequest) (*StatusPerson, error) 
 }
 
 func (s *service) UpdatePerson(params *updatePersonRequest) (*StatusPerson, error) {
-	personaID, err := s.repo.UpdatePerson(params)
+	rowAfected, err := s.repo.UpdatePerson(params)
 
 	if err != nil {
 		return nil, err
 	}
+
+	if rowAfected == 0 {
+		return nil, errors.New("No se pudo actualizar posiblemente el usuario no exista")
+	}
+
 	estadoInsert := StatusPerson{
-		PersonaID: "Cod " + strconv.Itoa(personaID) + " actualizado corractamente",
+		PersonaID: "Cod " + strconv.Itoa(params.ID) + " se actualizo corractamente " + strconv.Itoa(rowAfected) + " usuario",
+	}
+	return &estadoInsert, err
+}
+
+func (s *service) DeletePerson(param *deletePersonRequest) (*StatusPerson, error) {
+	rowAfected, err := s.repo.DeletePerson(param)
+	if err != nil {
+		return nil, err
+	}
+
+	if rowAfected == 0 {
+		return nil, errors.New("No se pudo eliminar posiblemente el usuario no exista")
+	}
+
+	estadoInsert := StatusPerson{
+		PersonaID: "Cod " + strconv.Itoa(param.PersonaID) + " se elimino corractamente " + strconv.Itoa(rowAfected) + " usuario",
 	}
 	return &estadoInsert, err
 }
