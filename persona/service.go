@@ -2,6 +2,7 @@ package persona
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 )
 
@@ -67,12 +68,13 @@ func (s *service) InsertPerson(params *addPersonRequest) (*StatusPerson, error) 
 func (s *service) UpdatePerson(params *updatePersonRequest) (*StatusPerson, error) {
 	rowAfected, err := s.repo.UpdatePerson(params)
 
+	fmt.Println(params.ID)
 	if err != nil {
 		return nil, err
 	}
 
 	if rowAfected == 0 {
-		return nil, errors.New("No se pudo actualizar posiblemente el usuario no exista")
+		return nil, errors.New("No se pudo actualizar posiblemente el usuario no exista o los datos no se alteraron")
 	}
 
 	estadoInsert := StatusPerson{

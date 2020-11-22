@@ -2,6 +2,7 @@ package persona
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 /*Repository para llamar manilpular la BD*/
@@ -108,12 +109,16 @@ func (repo *repository) UpdatePerson(params *updatePersonRequest) (int, error) {
 		GENERO = ?, 
 		DNI = ?, 
 		FECHA_NACIMIENTO = ? 
-		WHERE PERSONA_ID = ? AND ESTADO = 1
+		WHERE ESTADO = 1 AND PERSONA_ID = ?;
 	`
 	result, err := repo.db.Exec(queryStr, params.Nombre, params.ApellidoPaterno,
 		params.ApellidoMaterno, params.Genero, params.Dni,
 		params.FechaNacimiento, params.ID)
-	rowAfected, _ := result.RowsAffected()
+	rowAfected, errr := result.RowsAffected()
+	if errr != nil {
+		return 0, errr
+	}
+	fmt.Println(rowAfected)
 	return int(rowAfected), err
 }
 
