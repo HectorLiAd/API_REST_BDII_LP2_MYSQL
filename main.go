@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/database"
-	"github.com/API_REST_BDII_LP2_MYSQL/handler"
+	"github.com/API_REST_BDII_LP2_MYSQL/helper"
 	"github.com/API_REST_BDII_LP2_MYSQL/persona"
 	"github.com/go-chi/chi"
 	_ "github.com/go-sql-driver/mysql"
@@ -16,7 +16,7 @@ func main() {
 	defer db.Close()
 
 	r := chi.NewRouter()
-	r.Use(handler.GetCors().Handler)
+	r.Use(helper.GetCors().Handler)
 
 	var personaRepository = persona.NewRepository(db)
 	var personaServicio = persona.NerService(personaRepository)

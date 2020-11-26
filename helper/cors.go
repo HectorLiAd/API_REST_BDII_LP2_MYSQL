@@ -1,4 +1,4 @@
-package handler
+package helper
 
 import "github.com/go-chi/cors"
 
