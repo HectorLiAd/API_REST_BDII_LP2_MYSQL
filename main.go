@@ -8,6 +8,7 @@ import (
 
 	"github.com/API_REST_BDII_LP2_MYSQL/database"
 	"github.com/API_REST_BDII_LP2_MYSQL/helper"
+	"github.com/API_REST_BDII_LP2_MYSQL/persona"
 	"github.com/API_REST_BDII_LP2_MYSQL/usuario"
 	"github.com/API_REST_BDII_LP2_MYSQL/usuariologin"
 	"github.com/go-chi/chi"
@@ -22,19 +23,19 @@ func main() {
 	r.Use(helper.GetCors().Handler)
 
 	var (
-		usuarioRepository = usuario.NewRepository(db)
-		// personaRepository      = persona.NewRepository(db)
+		usuarioRepository      = usuario.NewRepository(db)
+		personaRepository      = persona.NewRepository(db)
 		usuarioLoginRepository = usuariologin.NewRepository(db)
 	)
 	var (
-		usuarioServicio = usuario.NewService(usuarioRepository)
-		// personaServicio     = persona.NerService(personaRepository)
+		usuarioServicio     = usuario.NewService(usuarioRepository)
+		personaServicio     = persona.NerService(personaRepository)
 		usuarioLoginService = usuariologin.NewService(usuarioLoginRepository)
 	)
-
+	r.Use(helper.GetCors().Handler)
 	r.Mount("/usuario", middlew.ValidoJWT(usuario.MakeHTTPSHandler(usuarioServicio)))
 	r.Mount("/usuariologin", usuariologin.MakeHTTPSHandler(usuarioLoginService))
-	// r.Mount("/persona", persona.MakeHTTPSHandler(personaServicio))
+	r.Mount("/persona", persona.MakeHTTPSHandler(personaServicio))
 
 	port := os.Getenv("PORT")
 	if port == "" {

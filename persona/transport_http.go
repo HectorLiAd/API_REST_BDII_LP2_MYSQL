@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/API_REST_BDII_LP2_MYSQL/middlew"
 	"github.com/go-chi/chi"
 	kithttp "github.com/go-kit/kit/transport/http"
 )
@@ -21,7 +20,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getPersonByIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/{id}", middlew.ValidoJWT(getPersonByHandler))
+	r.Method(http.MethodGet, "/{id}", getPersonByHandler)
 
 	//Obtener personas paginadas
 	getPersonHandler := kithttp.NewServer(
@@ -29,7 +28,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getPersonsRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPost, "/paginated", middlew.ValidoJWT(getPersonHandler))
+	r.Method(http.MethodPost, "/paginated", getPersonHandler)
 
 	//Agregar a una persona
 	addPersonHandler := kithttp.NewServer(
