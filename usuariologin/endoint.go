@@ -11,7 +11,6 @@ type loginUserRequest struct {
 	Password string
 }
 
-/*
 type passwordResetRequest struct {
 	NombrePersonal    string
 	ApellidoPaterno   string
@@ -21,7 +20,7 @@ type passwordResetRequest struct {
 	NewPassword       string
 	ConfirmarPassword string
 }
-*/
+
 func loginUserEndPoint(s Service) endpoint.Endpoint {
 	loginUserEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(loginUserRequest)
@@ -31,13 +30,11 @@ func loginUserEndPoint(s Service) endpoint.Endpoint {
 	return loginUserEndPoint
 }
 
-/*
 func passwordResetEndPoint(s Service) endpoint.Endpoint {
 	loginUserEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(passwordResetRequest)
-		fmt.Println(req)
-		// result, err := s.ChequeoExistePersona(&req)
-		return map[string]string{"mensaje": "tarea creada"}, nil
+		result, err := s.PasswordResetPersonaUsuario(&req)
+		return result, err
 	}
 	return loginUserEndPoint
-}*/
+}

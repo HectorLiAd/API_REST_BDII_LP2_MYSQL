@@ -2,7 +2,11 @@ package usuariologin
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 
+	"github.com/API_REST_BDII_LP2_MYSQL/helper"
+	"github.com/API_REST_BDII_LP2_MYSQL/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -10,7 +14,7 @@ import (
 type Service interface {
 	IntentoLogin(params *loginUserRequest) (*Usuario, error)
 	LoginUsuario(params *loginUserRequest) (interface{}, error)
-	// ChequeoExistePersona(params *passwordResetRequest) (*models.ResultOperacion, error)
+	PasswordResetPersonaUsuario(params *passwordResetRequest) (*models.ResultOperacion, error)
 }
 
 type service struct {
@@ -69,8 +73,8 @@ func (s *service) LoginUsuario(params *loginUserRequest) (interface{}, error) {
 	return resp, nil
 }
 
-/*
-func (s *service) ChequeoExistePersona(params *passwordResetRequest) (*models.ResultOperacion, error) {
+/*Actualizar el password del usuario*/
+func (s *service) PasswordResetPersonaUsuario(params *passwordResetRequest) (*models.ResultOperacion, error) {
 	usuario, resultPersona, err := s.repo.ChequeoExisteUsuarioPersona(params)
 	fmt.Println(resultPersona)
 	if resultPersona != 1 {
@@ -96,4 +100,3 @@ func (s *service) ChequeoExistePersona(params *passwordResetRequest) (*models.Re
 		Codigo: usuario.UsuarioID,
 	}, err
 }
-*/

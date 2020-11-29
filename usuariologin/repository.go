@@ -7,8 +7,8 @@ import (
 //Repository Tendremos un metodos en la interface para implementar en una estructura
 type Repository interface {
 	ChequeoExisteUsuario(email *string) (*Usuario, int, error)
-	// ChequeoExisteUsuarioPersona(params *passwordResetRequest) (*Usuario, int, error)
-	// ActualizarPasswordUsuario(params *Usuario) (int, error)
+	ChequeoExisteUsuarioPersona(params *passwordResetRequest) (*Usuario, int, error)
+	ActualizarPasswordUsuario(params *Usuario) (int, error)
 }
 
 type repository struct {
@@ -37,7 +37,6 @@ func (repo *repository) ChequeoExisteUsuario(email *string) (*Usuario, int, erro
 	return usuario, contCorreo, errr
 }
 
-/*
 func (repo *repository) ChequeoExisteUsuarioPersona(params *passwordResetRequest) (*Usuario, int, error) {
 	cantResult := 0
 	usuario := &Usuario{}
@@ -70,4 +69,3 @@ UPDATE USUARIO SET CLAVE = ? WHERE PERSONA_ID = ? AND EMAIL = ?`
 	cantAfectados, err := result.RowsAffected()
 	return int(cantAfectados), err
 }
-*/

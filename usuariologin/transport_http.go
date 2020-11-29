@@ -20,14 +20,15 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		kithttp.EncodeJSONResponse,
 	)
 	r.Method(http.MethodPost, "/login", loginUseHandler)
+
 	//ResetPassword user
-	/*passwordResetdUserHandler := kithttp.NewServer(
+	passwordResetdUserHandler := kithttp.NewServer(
 		passwordResetEndPoint(s),
 		passwordResetRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
 	r.Method(http.MethodPost, "/password_reset", passwordResetdUserHandler)
-	*/
+
 	return r
 }
 
@@ -37,10 +38,8 @@ func loginUserRequestDecoder(context context.Context, r *http.Request) (interfac
 	return request, err
 }
 
-/*
 func passwordResetRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	request := passwordResetRequest{}
 	err := json.NewDecoder(r.Body).Decode(&request)
 	return request, err
 }
-*/
