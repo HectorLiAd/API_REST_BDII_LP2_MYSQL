@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/API_REST_BDII_LP2_MYSQL/database"
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
+	"github.com/API_REST_BDII_LP2_MYSQL/usuario"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -17,42 +19,50 @@ var IDUsuario string
 
 /*ProcesoToken Proceso token para extraer sus valores */
 func ProcesoToken(tk string) (*models.Claim, bool, string, error) {
-	// miClave := []byte("secret_token_e_learning")
-	claims := &models.Claim{}
-
 	splitToken := strings.Split(tk, "Bearer")
 
 	if len(splitToken) != 2 {
-		return claims, false, string(""), errors.New("formato de token invalido")
+		return nil, false, string(""), errors.New("formato de token invalido")
 	}
 	tk = strings.TrimSpace(splitToken[1])
+	claims, isValidTkn, err := getClaimsToken(tk)
 
-	tkn, err := jwt.ParseWithClaims(tk, claims, func(toke *jwt.Token) (interface{}, error) {
-		return []byte("secret_token_e_learning"), nil
-	})
+	if isValidTkn {
+		encontradoBool := false
 
-	// databaseConnection := database.InitDB()
-	// defer databaseConnection.Close()
-	// var repository = usuario.NewRepository(databaseConnection)
-
-	if err == nil {
-		// var encontradoBool bool = false
-
-		// encontrado, errr := repository.ChequeoEmailExisteUsuario(claims.Email)
-		// if errr != nil {
-		// 	return claims, false, string(""), errr
-		// }
-		// if encontrado == 1 {
-		// 	Email = claims.Email
-		// 	IDUsuario = claims.ID
-		// 	encontradoBool = true
-		// }
-		return claims, true, IDUsuario, nil
-	}
-	if !tkn.Valid {
-		fmt.Println(tk)
-		return claims, false, string(""), errors.New("token invalido")
+		databaseConnection := database.InitDB()
+		defer databaseConnection.Close()
+		var repository = usuario.NewRepository(databaseConnection)
+		encontrado, errr := repository.ChequeoEmailExisteUsuario(claims.Email)
+		if errr != nil {
+			return claims, false, string(""), errr
+		}
+		if encontrado == 1 {
+			encontradoBool = true
+			fmt.Println("El usuario ingresado si existe")
+		}
+		return claims, encontradoBool, "HOOLA", nil
 	}
 
 	return claims, false, string(""), err
+}
+
+func getClaimsToken(tokenString string) (*models.Claim, bool, error) {
+	claims := &models.Claim{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte("secret_token_e_learning"), nil
+	})
+	/*QUIERO MOSTRAR LOS DATOS SI SON VALIDOS
+	Y DESPUES ENVIARLO A LA BASE DE DATOS PARA COMPROBAR
+	Y LUEGO QUIERO QUE RETORNE MI MODELO CLAIMS*/
+	fmt.Println(claims.Email)
+	fmt.Println(claims.ID)
+	fmt.Println(claims.Name)
+	// if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+	if token.Valid {
+		fmt.Println(claims)
+		// fmt.Printf("%v %v", claims.Foo, claims.StandardClaims.ExpiresAt)
+		return claims, true, err
+	}
+	return claims, false, err
 }

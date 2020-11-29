@@ -7,7 +7,7 @@ import (
 /*Claim Estructra para procesar el JWT*/
 type Claim struct {
 	Email string `json:"email"`
-	ID    string `json:"_id"`
+	ID    int    `json:"_id"`
 	Name  string `json:"nombre"`
 	jwt.StandardClaims
 }
