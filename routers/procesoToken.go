@@ -2,11 +2,10 @@ package routers
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
-	"github.com/API_REST_BDII_LP2_MYSQL/database"
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
-	"github.com/API_REST_BDII_LP2_MYSQL/usuario"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -18,7 +17,7 @@ var IDUsuario string
 
 /*ProcesoToken Proceso token para extraer sus valores */
 func ProcesoToken(tk string) (*models.Claim, bool, string, error) {
-	miClave := []byte("XDXDXD_token_XDXDXD")
+	// miClave := []byte("secret_token_e_learning")
 	claims := &models.Claim{}
 
 	splitToken := strings.Split(tk, "Bearer")
@@ -29,28 +28,29 @@ func ProcesoToken(tk string) (*models.Claim, bool, string, error) {
 	tk = strings.TrimSpace(splitToken[1])
 
 	tkn, err := jwt.ParseWithClaims(tk, claims, func(toke *jwt.Token) (interface{}, error) {
-		return miClave, nil
+		return []byte("secret_token_e_learning"), nil
 	})
 
-	databaseConnection := database.InitDB()
-	defer databaseConnection.Close()
-	var repository = usuario.NewRepository(databaseConnection)
+	// databaseConnection := database.InitDB()
+	// defer databaseConnection.Close()
+	// var repository = usuario.NewRepository(databaseConnection)
 
 	if err == nil {
-		var encontradoBool bool = false
+		// var encontradoBool bool = false
 
-		encontrado, errr := repository.ChequeoEmailExisteUsuario(claims.Email)
-		if errr != nil {
-			return claims, false, string(""), errr
-		}
-		if encontrado == 1 {
-			Email = claims.Email
-			IDUsuario = claims.ID
-			encontradoBool = true
-		}
-		return claims, encontradoBool, IDUsuario, nil
+		// encontrado, errr := repository.ChequeoEmailExisteUsuario(claims.Email)
+		// if errr != nil {
+		// 	return claims, false, string(""), errr
+		// }
+		// if encontrado == 1 {
+		// 	Email = claims.Email
+		// 	IDUsuario = claims.ID
+		// 	encontradoBool = true
+		// }
+		return claims, true, IDUsuario, nil
 	}
 	if !tkn.Valid {
+		fmt.Println(tk)
 		return claims, false, string(""), errors.New("token invalido")
 	}
 

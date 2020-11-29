@@ -38,7 +38,7 @@ func (s *service) RegistrarUsuario(params *registerUserRequest) (*models.ResultO
 		return nil, errors.New("El email es requerido")
 	}
 	if len(strings.TrimSpace(params.Password)) < 6 {
-		return nil, errors.New("La contraseña ingresada no es valida")
+		return nil, errors.New("La contraseña debe contener almenos 6 caracteres")
 	}
 	/*Verificar si el usuario existe*/
 	databaseConnection := database.InitDB()

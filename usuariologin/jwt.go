@@ -8,7 +8,7 @@ import (
 
 /*GeneroJWT Permite Crear el JWT*/
 func GeneroJWT(t *Usuario) (string, error) {
-	miClave := []byte("XDXDXD_token_XDXDXD") //Creando clave privada
+	miClave := []byte("secret_token_e_learning") //Creando clave privada
 	claims := jwt.MapClaims{}
 	claims["email"] = t.UsuarioEmail
 	claims["nombre"] = t.UsuarioNombre

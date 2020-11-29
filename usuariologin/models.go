@@ -2,7 +2,7 @@ package usuariologin
 
 /*Usuario para poder mostrar al usuario en el response*/
 type Usuario struct {
-	UsuarioID       string `json:"usuario_id"`
+	UsuarioID       int    `json:"usuario_id"`
 	UsuarioNombre   string `json:"nombre"`
 	UsuarioEmail    string `json:"email"`
 	UsuarioPassword string `json:"password,omitempty"`

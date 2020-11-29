@@ -10,6 +10,7 @@ import (
 type Service interface {
 	IntentoLogin(params *loginUserRequest) (*Usuario, error)
 	LoginUsuario(params *loginUserRequest) (interface{}, error)
+	// ChequeoExistePersona(params *passwordResetRequest) (*models.ResultOperacion, error)
 }
 
 type service struct {
@@ -67,3 +68,32 @@ func (s *service) LoginUsuario(params *loginUserRequest) (interface{}, error) {
 	// })
 	return resp, nil
 }
+
+/*
+func (s *service) ChequeoExistePersona(params *passwordResetRequest) (*models.ResultOperacion, error) {
+	usuario, resultPersona, err := s.repo.ChequeoExisteUsuarioPersona(params)
+	fmt.Println(resultPersona)
+	if resultPersona != 1 {
+		return nil, errors.New("El usuario solicitado no existe")
+	}
+	if params.NewPassword != params.ConfirmarPassword {
+		return nil, errors.New("El password ingresado no es valida")
+	}
+	if len(strings.TrimSpace(params.NewPassword)) < 6 {
+		return nil, errors.New("La contraseña debe contener almenos 6 caracteres")
+	}
+	pwdEncriptado, err := helper.EncriptarPassword(params.NewPassword)
+	if err != nil {
+		return nil, err
+	}
+	usuario.UsuarioPassword = pwdEncriptado
+	resultUpdatePass, err := s.repo.ActualizarPasswordUsuario(usuario)
+	if resultUpdatePass == 0 {
+		return nil, errors.New("No se pudo actualizar el password")
+	}
+	return &models.ResultOperacion{
+		Name:   "Usuario " + usuario.UsuarioNombre + " su password fue actualizado corractamente",
+		Codigo: usuario.UsuarioID,
+	}, err
+}
+*/

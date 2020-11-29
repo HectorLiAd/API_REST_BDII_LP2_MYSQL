@@ -17,3 +17,5 @@ func ValidoJWT(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+/*Validar de otra forma el JWT*/
