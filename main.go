@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -17,11 +18,11 @@ import (
 
 func main() {
 	db := database.InitDB()
+	fmt.Println(db)
 	defer db.Close()
 
 	r := chi.NewRouter()
 	r.Use(helper.GetCors().Handler)
-
 	var (
 		usuarioRepository      = usuario.NewRepository(db)
 		personaRepository      = persona.NewRepository(db)
@@ -41,5 +42,6 @@ func main() {
 	if port == "" {
 		port = "3000"
 	}
+	fmt.Println("PORT :" + port)
 	http.ListenAndServe(":"+port, r)
 }

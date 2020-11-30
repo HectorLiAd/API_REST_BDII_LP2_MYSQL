@@ -39,7 +39,7 @@ func ProcesoToken(tk string) (*models.Claim, bool, string, error) {
 		}
 		if encontrado == 1 {
 			encontradoBool = true
-			fmt.Println("El usuario ingresado si existe")
+			// fmt.Println("El usuario ingresado si existe")
 		}
 		return claims, encontradoBool, "HOOLA", nil
 	}
@@ -55,11 +55,12 @@ func getClaimsToken(tokenString string) (*models.Claim, bool, error) {
 	/*QUIERO MOSTRAR LOS DATOS SI SON VALIDOS
 	Y DESPUES ENVIARLO A LA BASE DE DATOS PARA COMPROBAR
 	Y LUEGO QUIERO QUE RETORNE MI MODELO CLAIMS*/
-	fmt.Println(claims.Email)
-	fmt.Println(claims.ID)
-	fmt.Println(claims.Name)
+	// fmt.Println(claims.Email) POSIBLEMENTE PUEDA QUE NECESITE PARA VER QUE DATOS ME LLEGA DEL TOKEN
+	// fmt.Println(claims.ID) POSIBLEMENTE PUEDA QUE NECESITE PARA VER QUE DATOS ME LLEGA DEL TOKEN
+	// fmt.Println(claims.Name) POSIBLEMENTE PUEDA QUE NECESITE PARA VER QUE DATOS ME LLEGA DEL TOKEN
 	// if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 	if token.Valid {
+		fmt.Println("---------------------------------------------")
 		fmt.Println(claims)
 		// fmt.Printf("%v %v", claims.Foo, claims.StandardClaims.ExpiresAt)
 		return claims, true, err

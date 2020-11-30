@@ -2,6 +2,7 @@ package usuariologin
 
 import (
 	"database/sql"
+	"fmt"
 )
 
 //Repository Tendremos un metodos en la interface para implementar en una estructura
@@ -20,21 +21,24 @@ func NewRepository(databaseConnection *sql.DB) Repository {
 	return &repository{db: databaseConnection}
 }
 
+/*ChequeoExisteUsuario permite verfiicar si el email existe y retorna al usuario encontrado*/
 func (repo *repository) ChequeoExisteUsuario(email *string) (*Usuario, int, error) {
 	contCorreo := 2
 	usuario := &Usuario{}
 	const queryStr = `SELECT PERSONA_ID, USER_NAME, EMAIL, CLAVE, AVATAR from USUARIO WHERE EMAIL = ? AND ESTADO_ELIMINADO = 1`
 	row := repo.db.QueryRow(queryStr, email)
-	err := row.Scan(&usuario.UsuarioID, &usuario.UsuarioNombre,
+	errRowPersona := row.Scan(&usuario.UsuarioID, &usuario.UsuarioNombre,
 		&usuario.UsuarioEmail, &usuario.UsuarioPassword,
 		&usuario.UsuarioAvatar)
-	if err != nil {
-		return nil, 0, err
-	}
+
 	const queryStrCont = `SELECT COUNT(EMAIL) FROM USUARIO WHERE EMAIL = ?`
 	rowCont := repo.db.QueryRow(queryStrCont, email)
 	errr := rowCont.Scan(&contCorreo)
-	return usuario, contCorreo, errr
+	if errr != nil && errRowPersona != nil {
+		fmt.Println("Error al quere obtener la persona")
+		return nil, 0, errr
+	}
+	return usuario, contCorreo, nil
 }
 
 func (repo *repository) ChequeoExisteUsuarioPersona(params *passwordResetRequest) (*Usuario, int, error) {
@@ -59,8 +63,7 @@ func (repo *repository) ChequeoExisteUsuarioPersona(params *passwordResetRequest
 }
 
 func (repo *repository) ActualizarPasswordUsuario(params *Usuario) (int, error) {
-	const queryStr = `
-UPDATE USUARIO SET CLAVE = ? WHERE PERSONA_ID = ? AND EMAIL = ?`
+	const queryStr = `UPDATE USUARIO SET CLAVE = ? WHERE PERSONA_ID = ? AND EMAIL = ?`
 	result, err := repo.db.Exec(queryStr, params.UsuarioPassword,
 		params.UsuarioID, params.UsuarioEmail)
 	if err != nil {

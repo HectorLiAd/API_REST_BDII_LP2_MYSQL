@@ -18,7 +18,7 @@ type registerUserRequest struct {
 func registerUserEndPoint(s Service) endpoint.Endpoint {
 	registerUserEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(registerUserRequest)
-		result, err := s.RegistrarUsuario(&req)
+		result, err := s.RegistrarUsuario(trimStrUserRequest(&req))
 		return result, err
 	}
 	return registerUserEndPoint
