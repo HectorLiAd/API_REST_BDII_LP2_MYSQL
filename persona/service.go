@@ -2,7 +2,6 @@ package persona
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/helper"
@@ -52,22 +51,20 @@ func (s *service) GetPersons(params *getPersonsRequest) (*PersonList, error) {
 
 func (s *service) InsertPerson(params *addPersonRequest) (*StatusPerson, error) {
 	//Validacion params
-	if !helper.ValidarDniStr(params.Dni) {
+	if !helper.ValidarDniStr(params.Dni) || len(params.Dni) != 8 {
 		return nil, errors.New("El DNI ingresado no es un formato valido")
 	}
 	if !helper.ValidarDateStr(params.FechaNacimiento) {
 		return nil, errors.New("Formato de fecha no admitido, intente YYYY/MM/DD o YYYY-MM-DD")
 	}
+	//Ingresando datos a la BD y validaciones
 	personaID, err := s.repo.InsertPerson(params)
-
 	if err != nil {
 		return nil, err
 	}
-
 	if personaID <= 0 {
 		return nil, errors.New("no se pudo registrar a la persona")
 	}
-
 	estadoInsert := StatusPerson{
 		PersonaID: "Cod " + strconv.Itoa(personaID) + " registrado corractamente",
 	}
@@ -75,17 +72,21 @@ func (s *service) InsertPerson(params *addPersonRequest) (*StatusPerson, error) 
 }
 
 func (s *service) UpdatePerson(params *updatePersonRequest) (*StatusPerson, error) {
+	//Validacion params
+	if !helper.ValidarDniStr(params.Dni) || len(params.Dni) != 8 {
+		return nil, errors.New("El DNI ingresado no es un formato valido")
+	}
+	if !helper.ValidarDateStr(params.FechaNacimiento) {
+		return nil, errors.New("Formato de fecha no admitido, intente YYYY/MM/DD o YYYY-MM-DD")
+	}
+	//Insertando a la BD y validando
 	rowAfected, err := s.repo.UpdatePerson(params)
-
-	fmt.Println(params.ID)
 	if err != nil {
 		return nil, err
 	}
-
 	if rowAfected == 0 {
 		return nil, errors.New("No se pudo actualizar posiblemente el usuario no exista o los datos no se alteraron")
 	}
-
 	estadoInsert := StatusPerson{
 		PersonaID: "Cod " + strconv.Itoa(params.ID) + " se actualizo corractamente " + strconv.Itoa(rowAfected) + " usuario",
 	}
@@ -97,7 +98,6 @@ func (s *service) DeletePerson(param *deletePersonRequest) (*StatusPerson, error
 	if err != nil {
 		return nil, err
 	}
-
 	if rowAfected == 0 {
 		return nil, errors.New("No se pudo eliminar posiblemente el usuario no exista")
 	}
