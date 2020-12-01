@@ -5,7 +5,7 @@ type TipoUnidad struct {
 	ID          int                `json:"id"`
 	Nombre      string             `json:"nombre,omitempty"`
 	Descripcion string             `json:"descripcion,omitempty"`
-	UnidadAcad  []*UnidadAcademica `json:"unidadAcad"`
+	UnidadAcad  []*UnidadAcademica `json:"unidadAcad,omitempty"`
 }
 
 /*UnidadAcademica permite mostar la unidad academica*/
