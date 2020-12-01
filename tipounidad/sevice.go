@@ -37,5 +37,10 @@ func (s *service) CrearTipoUnidad(params *addTipoUnidadRequest) (*models.ResultO
 
 func (s *service) ObtenerRegistrosTipoUnidad() ([]*TipoUnidad, error) {
 	result, err := s.repo.ObtenerTodosLosTiposDeUnidad()
+	if err != nil {
+		return nil, err
+	}
+	resulUnidadAcad, err := s.repo.ObtenerTodaUnidadAcademica(result.ID)
+	result.UnidadAcad = resulO
 	return result, err
 }

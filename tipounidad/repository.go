@@ -8,6 +8,7 @@ import (
 type Repository interface {
 	crearTipoUnidad(params *addTipoUnidadRequest) (int, error)
 	ObtenerTodosLosTiposDeUnidad() ([]*TipoUnidad, error)
+	ObtenerTodaUnidadAcademica(unidadAcadID int) ([]*UnidadAcademica, error)
 }
 
 type repository struct {
@@ -48,4 +49,22 @@ func (repo *repository) ObtenerTodosLosTiposDeUnidad() ([]*TipoUnidad, error) {
 		tipoUnidades = append(tipoUnidades, tipoUnidad)
 	}
 	return tipoUnidades, err
+}
+
+func (repo *repository) ObtenerTodaUnidadAcademica(unidadAcadID int) ([]*UnidadAcademica, error) {
+	const queryStr = `SELECT UNIDAD_ACAD_ID, NOMBRE FROM UNIDAD_ACAD WHERE TU_ID = ?`
+	result, err := repo.db.Query(queryStr, unidadAcadID)
+	var unidadesAcad []*UnidadAcademica
+	for result.Next() {
+		unidadAcad := &UnidadAcademica{}
+		err := result.Scan(
+			&unidadAcad.ID,
+			&unidadAcad.Nombre,
+		)
+		if err != nil {
+			return nil, err
+		}
+		unidadesAcad = append(unidadesAcad, unidadAcad)
+	}
+	return unidadesAcad, err
 }
