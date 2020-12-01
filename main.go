@@ -39,7 +39,7 @@ func main() {
 		tipoUnidadService      = tipounidad.NewService(tipoUnidadRepository)
 		unidadAcademicaService = unidadacademica.NewService(unidadAcademicaRepository)
 	)
-	r.Use(helper.GetCors().Handler)
+
 	r.Mount("/usuario", middlew.ValidoJWT(usuario.MakeHTTPSHandler(usuarioService)))
 	r.Mount("/usuariologin", usuariologin.MakeHTTPSHandler(usuarioLoginService))
 	r.Mount("/persona", persona.MakeHTTPSHandler(personaService))
