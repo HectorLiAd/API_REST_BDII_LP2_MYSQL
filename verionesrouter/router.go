@@ -19,11 +19,11 @@ func RouterV1(db *sql.DB) http.Handler {
 	r := chi.NewRouter()
 	r.Use(helper.GetCors().Handler)
 	var (
-		usuarioRepository         = usuario.NewRepository(db)
-		personaRepository         = persona.NewRepository(db)
-		usuarioLoginRepository    = usuariologin.NewRepository(db)
-		tipoUnidadRepository      = tipounidad.NewRepository(db)
-		unidadAcademicaRepository = unidadacademica.NewRepository(db)
+		usuarioRepository         = usuario.NewRepository(db)         //HECTOR
+		personaRepository         = persona.NewRepository(db)         //FABRICIO
+		usuarioLoginRepository    = usuariologin.NewRepository(db)    //HECTOR
+		tipoUnidadRepository      = tipounidad.NewRepository(db)      //MARIO
+		unidadAcademicaRepository = unidadacademica.NewRepository(db) //MARIO
 	)
 	var (
 		usuarioService         = usuario.NewService(usuarioRepository)
