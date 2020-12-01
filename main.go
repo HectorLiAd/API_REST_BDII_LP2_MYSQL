@@ -16,7 +16,7 @@ func main() {
 	fmt.Println(db)
 	defer db.Close()
 	r := chi.NewRouter()
-	r.Mount("/v1", verionesrouter.Router(db))
+	r.Mount("/v1", verionesrouter.RouterV1(db))
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
