@@ -17,7 +17,7 @@ type idUnidadAcademicaRequest struct {
 func makeAddUnidadAcademicaEndPoint(s Service) endpoint.Endpoint {
 	addUnidadAcademicaEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(addUnidadAcademicaRequest)
-		result, err := s.AgregarUnidadAcademica(&req)
+		result, err := s.AgregarUnidadAcademica(trimStrAddUnidadAcademicaRequest(&req))
 		return result, err
 	}
 	return addUnidadAcademicaEndPoint
