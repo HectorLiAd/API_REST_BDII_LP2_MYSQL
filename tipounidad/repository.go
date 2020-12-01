@@ -46,6 +46,8 @@ func (repo *repository) ObtenerTodosLosTiposDeUnidad() ([]*TipoUnidad, error) {
 		if err != nil {
 			return nil, err
 		}
+		unidadAcad, _ := repo.ObtenerTodaUnidadAcademica(tipoUnidad.ID)
+		tipoUnidad.UnidadAcad = unidadAcad
 		tipoUnidades = append(tipoUnidades, tipoUnidad)
 	}
 	return tipoUnidades, err

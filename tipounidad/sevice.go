@@ -40,7 +40,10 @@ func (s *service) ObtenerRegistrosTipoUnidad() ([]*TipoUnidad, error) {
 	if err != nil {
 		return nil, err
 	}
-	resulUnidadAcad, err := s.repo.ObtenerTodaUnidadAcademica(result.ID)
-	result.UnidadAcad = resulO
+	// resulUnidadAcad, err := s.repo.ObtenerTodaUnidadAcademica(result.ID)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// result.UnidadAcad = resulUnidadAcad
 	return result, err
 }
