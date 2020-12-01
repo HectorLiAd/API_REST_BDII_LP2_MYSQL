@@ -41,10 +41,10 @@ func (s *service) ObtenerUnidadAcademicaByID(param *idUnidadAcademicaRequest) (*
 		return nil, errUnidadACad
 	}
 	// fmt.Println(resultUniAcad.TipoUnidadID)
-	// resultTipoUnidad, errTipoUnid := s.repo.ObtenerTipoUnidadByID(resultUniAcad.TipoUnidadID)
-	// if errTipoUnid != nil {
-	// 	return nil, errTipoUnid
-	// }
-	// resultUniAcad.TipoUnidad = *resultTipoUnidad
+	resultTipoUnidad, errTipoUnid := s.repo.ObtenerTipoUnidadByID(resultUniAcad.TipoUnidadID)
+	if errTipoUnid != nil {
+		return nil, errTipoUnid
+	}
+	resultUniAcad.TipoUnidad = *resultTipoUnidad
 	return resultUniAcad, nil
 }
