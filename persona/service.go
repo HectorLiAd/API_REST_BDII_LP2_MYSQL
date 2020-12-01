@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+
+	"github.com/API_REST_BDII_LP2_MYSQL/helper"
 )
 
 /*Service interface para poder usarlo de forma nativa desde el main*/
@@ -49,6 +51,13 @@ func (s *service) GetPersons(params *getPersonsRequest) (*PersonList, error) {
 }
 
 func (s *service) InsertPerson(params *addPersonRequest) (*StatusPerson, error) {
+	//Validacion params
+	if !helper.ValidarDniStr(params.Dni) {
+		return nil, errors.New("El DNI ingresado no es un formato valido")
+	}
+	if !helper.ValidarDateStr(params.FechaNacimiento) {
+		return nil, errors.New("Formato de fecha no admitido, intente YYYY/MM/DD o YYYY-MM-DD")
+	}
 	personaID, err := s.repo.InsertPerson(params)
 
 	if err != nil {

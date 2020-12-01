@@ -64,7 +64,7 @@ func makeGetPersonsEndPoint(s Service) endpoint.Endpoint {
 func makeAddPersonEndpoint(s Service) endpoint.Endpoint {
 	addPersonEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(addPersonRequest)
-		addPerson, err := s.InsertPerson(&req)
+		addPerson, err := s.InsertPerson(trimStrAddPersonRequest(&req))
 		return addPerson, err
 	}
 	return addPersonEndpoint
@@ -73,7 +73,7 @@ func makeAddPersonEndpoint(s Service) endpoint.Endpoint {
 func makeUpdatePersonEndpoint(s Service) endpoint.Endpoint {
 	updatePersonEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(updatePersonRequest)
-		r, err := s.UpdatePerson(&req)
+		r, err := s.UpdatePerson(trimStrUpdatePersonRequest(&req))
 		return r, err
 	}
 	return updatePersonEndpoint
