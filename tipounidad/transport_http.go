@@ -21,7 +21,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodPost, "/", addTipoUnidadHandler)
 
-	//Agregar a el tipo unidad
+	//Agregar a todos los tipos de unidad
 	getAllTipoUnidadHandler := kithttp.NewServer(
 		makeGetAllTipoUnidadEndPoint(s),
 		getAllTipoUnidadRequestDecoder,
@@ -38,5 +38,5 @@ func addTipoUnidadRequestDecoder(context context.Context, r *http.Request) (inte
 	return request, err
 }
 func getAllTipoUnidadRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-	return addTipoUnidadRequest{}, nil
+	return nil, nil
 }

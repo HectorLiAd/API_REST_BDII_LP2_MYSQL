@@ -8,7 +8,8 @@ import (
 type Repository interface {
 	crearTipoUnidad(params *addTipoUnidadRequest) (int, error)
 	ObtenerTodosLosTiposDeUnidad() ([]*TipoUnidad, error)
-	ObtenerTodaUnidadAcademica(unidadAcadID int) ([]*UnidadAcademica, error)
+	ObtenerUnidadAcademica(unidadAcadID int) ([]*UnidadAcademica, error)
+	// ObtenerTipoDeUnidad(param *getTipoUnidadByIDRequest) (*UnidadAcademica, error)
 }
 
 type repository struct {
@@ -46,14 +47,14 @@ func (repo *repository) ObtenerTodosLosTiposDeUnidad() ([]*TipoUnidad, error) {
 		if err != nil {
 			return nil, err
 		}
-		unidadAcad, _ := repo.ObtenerTodaUnidadAcademica(tipoUnidad.ID)
+		unidadAcad, _ := repo.ObtenerUnidadAcademica(tipoUnidad.ID)
 		tipoUnidad.UnidadAcad = unidadAcad
 		tipoUnidades = append(tipoUnidades, tipoUnidad)
 	}
 	return tipoUnidades, err
 }
 
-func (repo *repository) ObtenerTodaUnidadAcademica(unidadAcadID int) ([]*UnidadAcademica, error) {
+func (repo *repository) ObtenerUnidadAcademica(unidadAcadID int) ([]*UnidadAcademica, error) {
 	const queryStr = `SELECT UNIDAD_ACAD_ID, NOMBRE FROM UNIDAD_ACAD WHERE TU_ID = ?`
 	result, err := repo.db.Query(queryStr, unidadAcadID)
 	var unidadesAcad []*UnidadAcademica
@@ -70,3 +71,24 @@ func (repo *repository) ObtenerTodaUnidadAcademica(unidadAcadID int) ([]*UnidadA
 	}
 	return unidadesAcad, err
 }
+
+// func (repo *repository) ObtenerTipoDeUnidad(param *getTipoUnidadByIDRequest) (*UnidadAcademica, error) {
+// 	const queryStr = `SELECT TU_ID, NOMBRE, DESCRIPCION FROM TIPO_UNIDAD WHERE `
+// 	result, err := repo.db.Query(queryStr)
+// 	var tipoUnidades []*TipoUnidad
+// 	for result.Next() {
+// 		tipoUnidad := &TipoUnidad{}
+// 		err := result.Scan(
+// 			&tipoUnidad.ID,
+// 			&tipoUnidad.Nombre,
+// 			&tipoUnidad.Descripcion,
+// 		)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		unidadAcad, _ := repo.ObtenerUnidadAcademica(tipoUnidad.ID)
+// 		tipoUnidad.UnidadAcad = unidadAcad
+// 		tipoUnidades = append(tipoUnidades, tipoUnidad)
+// 	}
+// 	return tipoUnidades, err
+// }

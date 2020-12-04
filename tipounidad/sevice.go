@@ -1,6 +1,7 @@
 package tipounidad
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
@@ -40,6 +41,7 @@ func (s *service) ObtenerRegistrosTipoUnidad() ([]*TipoUnidad, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(result)
 	// resulUnidadAcad, err := s.repo.ObtenerTodaUnidadAcademica(result.ID)
 	// if err != nil {
 	// 	return nil, err

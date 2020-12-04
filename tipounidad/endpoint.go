@@ -11,7 +11,8 @@ type addTipoUnidadRequest struct {
 	Descripcion string
 }
 
-type getAllGetTipoUnidadRequest struct {
+type getTipoUnidadByIDRequest struct {
+	ID int
 }
 
 func makeAddTipoUnidadEndPoint(s Service) endpoint.Endpoint {
