@@ -11,6 +11,7 @@ import (
 type Service interface {
 	CrearTipoUnidad(params *addTipoUnidadRequest) (*models.ResultOperacion, error)
 	ObtenerRegistrosTipoUnidad() ([]*TipoUnidad, error)
+	ObtenerTipoUnidadByID(param *getTipoUnidadByIDRequest) (*TipoUnidad, error)
 }
 
 type service struct {
@@ -48,4 +49,8 @@ func (s *service) ObtenerRegistrosTipoUnidad() ([]*TipoUnidad, error) {
 	// }
 	// result.UnidadAcad = resulUnidadAcad
 	return result, err
+}
+
+func (s *service) ObtenerTipoUnidadByID(param *getTipoUnidadByIDRequest) (*TipoUnidad, error) {
+	return s.repo.ObtenerTipoDeUnidadByID(param)
 }

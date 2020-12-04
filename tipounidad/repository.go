@@ -9,7 +9,7 @@ type Repository interface {
 	crearTipoUnidad(params *addTipoUnidadRequest) (int, error)
 	ObtenerTodosLosTiposDeUnidad() ([]*TipoUnidad, error)
 	ObtenerUnidadAcademica(unidadAcadID int) ([]*UnidadAcademica, error)
-	// ObtenerTipoDeUnidad(param *getTipoUnidadByIDRequest) (*UnidadAcademica, error)
+	ObtenerTipoDeUnidadByID(param *getTipoUnidadByIDRequest) (*TipoUnidad, error)
 }
 
 type repository struct {
@@ -72,23 +72,15 @@ func (repo *repository) ObtenerUnidadAcademica(unidadAcadID int) ([]*UnidadAcade
 	return unidadesAcad, err
 }
 
-// func (repo *repository) ObtenerTipoDeUnidad(param *getTipoUnidadByIDRequest) (*UnidadAcademica, error) {
-// 	const queryStr = `SELECT TU_ID, NOMBRE, DESCRIPCION FROM TIPO_UNIDAD WHERE `
-// 	result, err := repo.db.Query(queryStr)
-// 	var tipoUnidades []*TipoUnidad
-// 	for result.Next() {
-// 		tipoUnidad := &TipoUnidad{}
-// 		err := result.Scan(
-// 			&tipoUnidad.ID,
-// 			&tipoUnidad.Nombre,
-// 			&tipoUnidad.Descripcion,
-// 		)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		unidadAcad, _ := repo.ObtenerUnidadAcademica(tipoUnidad.ID)
-// 		tipoUnidad.UnidadAcad = unidadAcad
-// 		tipoUnidades = append(tipoUnidades, tipoUnidad)
-// 	}
-// 	return tipoUnidades, err
-// }
+func (repo *repository) ObtenerTipoDeUnidadByID(param *getTipoUnidadByIDRequest) (*TipoUnidad, error) {
+	const queryStr = `SELECT TU_ID, NOMBRE, DESCRIPCION FROM TIPO_UNIDAD WHERE TU_ID = ?`
+	row := repo.db.QueryRow(queryStr, param.ID)
+	tipoUnidad := &TipoUnidad{}
+	err := row.Scan(&tipoUnidad.ID, &tipoUnidad.Nombre, &tipoUnidad.Descripcion)
+	if err != nil {
+		return nil, err
+	}
+	unidadAcad, _ := repo.ObtenerUnidadAcademica(tipoUnidad.ID)
+	tipoUnidad.UnidadAcad = unidadAcad
+	return tipoUnidad, err
+}

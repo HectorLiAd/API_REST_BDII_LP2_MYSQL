@@ -2,6 +2,7 @@ package tipounidad
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
 )
@@ -27,6 +28,16 @@ func makeAddTipoUnidadEndPoint(s Service) endpoint.Endpoint {
 func makeGetAllTipoUnidadEndPoint(s Service) endpoint.Endpoint {
 	addTipoUnidadEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		result, err := s.ObtenerRegistrosTipoUnidad()
+		return result, err
+	}
+	return addTipoUnidadEndPoint
+}
+
+func makeGetTipoUnidadByIDEndPoint(s Service) endpoint.Endpoint {
+	addTipoUnidadEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getTipoUnidadByIDRequest)
+		fmt.Println(req)
+		result, err := s.ObtenerTipoUnidadByID(&req)
 		return result, err
 	}
 	return addTipoUnidadEndPoint
