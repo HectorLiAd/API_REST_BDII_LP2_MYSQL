@@ -2,7 +2,6 @@ package tipounidad
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
 )
@@ -14,6 +13,12 @@ type addTipoUnidadRequest struct {
 
 type getTipoUnidadByIDRequest struct {
 	ID int
+}
+
+type updateTipoUnidadRequest struct {
+	ID          int
+	Nombre      string
+	Descripcion string
 }
 
 func makeAddTipoUnidadEndPoint(s Service) endpoint.Endpoint {
@@ -36,8 +41,16 @@ func makeGetAllTipoUnidadEndPoint(s Service) endpoint.Endpoint {
 func makeGetTipoUnidadByIDEndPoint(s Service) endpoint.Endpoint {
 	addTipoUnidadEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getTipoUnidadByIDRequest)
-		fmt.Println(req)
 		result, err := s.ObtenerTipoUnidadByID(&req)
+		return result, err
+	}
+	return addTipoUnidadEndPoint
+}
+
+func makeUpdateTipoUnidadEndPoint(s Service) endpoint.Endpoint {
+	addTipoUnidadEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(updateTipoUnidadRequest)
+		result, err := s.ActualizarTipoUnidad(&req)
 		return result, err
 	}
 	return addTipoUnidadEndPoint

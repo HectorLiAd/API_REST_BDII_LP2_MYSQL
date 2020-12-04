@@ -10,6 +10,7 @@ type Repository interface {
 	ObtenerTodosLosTiposDeUnidad() ([]*TipoUnidad, error)
 	ObtenerUnidadAcademica(unidadAcadID int) ([]*UnidadAcademica, error)
 	ObtenerTipoDeUnidadByID(param *getTipoUnidadByIDRequest) (*TipoUnidad, error)
+	ActualizarTipoUnidad(params *updateTipoUnidadRequest) (int, error)
 }
 
 type repository struct {
@@ -83,4 +84,17 @@ func (repo *repository) ObtenerTipoDeUnidadByID(param *getTipoUnidadByIDRequest)
 	unidadAcad, _ := repo.ObtenerUnidadAcademica(tipoUnidad.ID)
 	tipoUnidad.UnidadAcad = unidadAcad
 	return tipoUnidad, err
+}
+
+func (repo *repository) ActualizarTipoUnidad(params *updateTipoUnidadRequest) (int, error) {
+	const queryStr = `UPDATE TIPO_UNIDAD SET NOMBRE = ?, DESCRIPCION = ? WHERE TU_ID = ?`
+	result, err := repo.db.Exec(queryStr, params.Nombre, params.Descripcion, params.ID)
+	if err != nil {
+		return 0, err
+	}
+	rowAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	return int(rowAffected), nil
 }

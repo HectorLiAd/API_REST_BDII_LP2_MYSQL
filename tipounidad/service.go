@@ -1,6 +1,7 @@
 package tipounidad
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -12,6 +13,7 @@ type Service interface {
 	CrearTipoUnidad(params *addTipoUnidadRequest) (*models.ResultOperacion, error)
 	ObtenerRegistrosTipoUnidad() ([]*TipoUnidad, error)
 	ObtenerTipoUnidadByID(param *getTipoUnidadByIDRequest) (*TipoUnidad, error)
+	ActualizarTipoUnidad(params *updateTipoUnidadRequest) (*models.ResultOperacion, error)
 }
 
 type service struct {
@@ -53,4 +55,21 @@ func (s *service) ObtenerRegistrosTipoUnidad() ([]*TipoUnidad, error) {
 
 func (s *service) ObtenerTipoUnidadByID(param *getTipoUnidadByIDRequest) (*TipoUnidad, error) {
 	return s.repo.ObtenerTipoDeUnidadByID(param)
+}
+
+func (s *service) ActualizarTipoUnidad(params *updateTipoUnidadRequest) (*models.ResultOperacion, error) {
+	resultUpdate, err := s.repo.ActualizarTipoUnidad(params)
+
+	if err != nil {
+		return nil, err
+	}
+	if resultUpdate == 0 {
+		return nil, errors.New("No se puedo actualizar el tipo de unidad")
+	}
+	resultOperacion := &models.ResultOperacion{
+		Name:        "Se actualizo correctamente " + params.Nombre + " con el id " + strconv.Itoa(params.ID),
+		Codigo:      params.ID,
+		RowAffected: resultUpdate,
+	}
+	return resultOperacion, nil
 }
