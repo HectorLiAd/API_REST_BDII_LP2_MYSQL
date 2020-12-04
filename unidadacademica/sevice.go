@@ -1,6 +1,7 @@
 package unidadacademica
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
@@ -24,13 +25,14 @@ func NewService(repo Repository) Service {
 }
 
 func (s *service) AgregarUnidadAcademica(params *addUnidadAcademicaRequest) (*models.ResultOperacion, error) {
-	result, err := s.repo.AgregarUnidadAcademica(params)
+	result, rowAfected, err := s.repo.AgregarUnidadAcademica(params)
 	if err != nil {
 		return nil, err
 	}
 	resultInsert := &models.ResultOperacion{
-		Name:   "Se agrego " + params.Nombre + " con el id " + strconv.Itoa(result),
-		Codigo: result,
+		Name:        "Se agrego " + params.Nombre + " con el id " + strconv.Itoa(result),
+		Codigo:      result,
+		RowAffected: rowAfected,
 	}
 	return resultInsert, nil
 }
@@ -38,13 +40,12 @@ func (s *service) AgregarUnidadAcademica(params *addUnidadAcademicaRequest) (*mo
 func (s *service) ObtenerUnidadAcademicaByID(param *idUnidadAcademicaRequest) (*UnidadAcademica, error) {
 	resultUniAcad, errUnidadACad := s.repo.ObtenerUnidadAcademicaByID(param)
 	if errUnidadACad != nil {
-		return nil, errUnidadACad
+		return nil, errors.New("No hay resultados pipipipipi" + errUnidadACad.Error())
 	}
 	// fmt.Println(resultUniAcad.TipoUnidadID)
-	resultTipoUnidad, errTipoUnid := s.repo.ObtenerTipoUnidadByID(resultUniAcad.TipoUnidadID)
-	if errTipoUnid != nil {
-		return nil, errTipoUnid
-	}
-	resultUniAcad.TipoUnidad = *resultTipoUnidad
+	// resultTipoUnidad, errTipoUnid := s.repo.ObtenerTipoUnidadByID(resultUniAcad.TipoUnidadID)
+	// if errTipoUnid != nil {
+	// 	return nil, errTipoUnid
+	// }
 	return resultUniAcad, nil
 }
