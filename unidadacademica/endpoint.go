@@ -2,6 +2,7 @@ package unidadacademica
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
 )
@@ -12,6 +13,11 @@ type addUnidadAcademicaRequest struct {
 }
 type idUnidadAcademicaRequest struct {
 	ID int
+}
+
+type updateUnidadAcademicaRequest struct {
+	ID     int
+	Nombre string
 }
 
 func makeAddUnidadAcademicaEndPoint(s Service) endpoint.Endpoint {
@@ -30,4 +36,16 @@ func makeGetUnidadAcademicaByIDEndPoint(s Service) endpoint.Endpoint {
 		return result, err
 	}
 	return addUnidadAcademicaEndPoint
+}
+
+func makeUpdateUnidadAcademicaEndPoint(s Service) endpoint.Endpoint {
+	updateUnidadAcademicaEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(updateUnidadAcademicaRequest)
+		fmt.Println("Update")
+		fmt.Println(req.ID)
+		fmt.Println(req.Nombre)
+		result, err := s.ActualizarUnidadAcademicaByID(&req)
+		return result, err
+	}
+	return updateUnidadAcademicaEndPoint
 }

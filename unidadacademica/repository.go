@@ -8,6 +8,7 @@ import (
 type Repository interface {
 	AgregarUnidadAcademica(params *addUnidadAcademicaRequest) (int, int, error)
 	ObtenerUnidadAcademicaByID(param *idUnidadAcademicaRequest) (*UnidadAcademica, error)
+	ActualizarUnidadAcademicaByID(params *updateUnidadAcademicaRequest) (int, error)
 }
 
 type repository struct {
@@ -37,4 +38,14 @@ func (repo *repository) ObtenerUnidadAcademicaByID(param *idUnidadAcademicaReque
 	unidadAcademica := &UnidadAcademica{}
 	err := result.Scan(&unidadAcademica.ID, &unidadAcademica.TipoUnidad, &unidadAcademica.Nombre)
 	return unidadAcademica, err
+}
+
+func (repo *repository) ActualizarUnidadAcademicaByID(params *updateUnidadAcademicaRequest) (int, error) {
+	const queryStr = `UPDATE UNIDAD_ACAD SET NOMBRE = ? WHERE UNIDAD_ACAD_ID = ?`
+	result, err := repo.db.Exec(queryStr, params.Nombre, params.ID)
+	if err != nil {
+		return 0, nil
+	}
+	rowAffected, err := result.RowsAffected()
+	return int(rowAffected), err
 }

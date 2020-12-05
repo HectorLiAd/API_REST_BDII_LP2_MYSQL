@@ -11,6 +11,7 @@ import (
 type Service interface {
 	AgregarUnidadAcademica(params *addUnidadAcademicaRequest) (*models.ResultOperacion, error)
 	ObtenerUnidadAcademicaByID(param *idUnidadAcademicaRequest) (*UnidadAcademica, error)
+	ActualizarUnidadAcademicaByID(params *updateUnidadAcademicaRequest) (*models.ResultOperacion, error)
 }
 
 type service struct {
@@ -48,4 +49,17 @@ func (s *service) ObtenerUnidadAcademicaByID(param *idUnidadAcademicaRequest) (*
 	// 	return nil, errTipoUnid
 	// }
 	return resultUniAcad, nil
+}
+
+func (s *service) ActualizarUnidadAcademicaByID(params *updateUnidadAcademicaRequest) (*models.ResultOperacion, error) {
+	rowAffected, err := s.repo.ActualizarUnidadAcademicaByID(params)
+	if err != nil {
+		return nil, err
+	}
+	resultSms := &models.ResultOperacion{
+		Name:        "Se actualizo correctamente la unidad academica con el id " + strconv.Itoa(params.ID),
+		Codigo:      params.ID,
+		RowAffected: rowAffected,
+	}
+	return resultSms, nil
 }
