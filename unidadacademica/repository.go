@@ -9,6 +9,7 @@ type Repository interface {
 	AgregarUnidadAcademica(params *addUnidadAcademicaRequest) (int, int, error)
 	ObtenerUnidadAcademicaByID(param *idUnidadAcademicaRequest) (*UnidadAcademica, error)
 	ActualizarUnidadAcademicaByID(params *updateUnidadAcademicaRequest) (int, error)
+	ObtenerTodasLasUnidadesAcademicas() ([]*UnidadAcademica, error)
 }
 
 type repository struct {
@@ -48,4 +49,22 @@ func (repo *repository) ActualizarUnidadAcademicaByID(params *updateUnidadAcadem
 	}
 	rowAffected, err := result.RowsAffected()
 	return int(rowAffected), err
+}
+
+func (repo *repository) ObtenerTodasLasUnidadesAcademicas() ([]*UnidadAcademica, error) {
+	const queryStr = `SELECT UNIDAD_ACAD_ID, TIPO_UNIDAD, NOMBRE FROM VW_UNIDAD_ACADEMICA`
+	result, err := repo.db.Query(queryStr)
+	if err != nil {
+		return nil, err
+	}
+	var unidadesAcademicas []*UnidadAcademica
+	for result.Next() {
+		unidadAcademica := &UnidadAcademica{}
+		errScan := result.Scan(&unidadAcademica.ID, &unidadAcademica.TipoUnidad, &unidadAcademica.Nombre)
+		if errScan != nil {
+			return nil, errScan
+		}
+		unidadesAcademicas = append(unidadesAcademicas, unidadAcademica)
+	}
+	return unidadesAcademicas, nil
 }

@@ -38,6 +38,14 @@ func MakeHTTPSHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodPut, "/", updateUnidadAcademicaByIDHandler)
 
+	// Obtener todas las unidades academicas
+	getAllUnidadAcademicaByIDHandler := kithttp.NewServer(
+		makeGetAllUnidadAcademicaEndPoint(s),
+		getAllUnidadAcademicaRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodGet, "/", getAllUnidadAcademicaByIDHandler)
+
 	return r
 }
 
@@ -59,4 +67,8 @@ func updateUnidadAcademicaRequestDecoder(context context.Context, r *http.Reques
 	request := updateUnidadAcademicaRequest{}
 	err := json.NewDecoder(r.Body).Decode(&request)
 	return request, err
+}
+
+func getAllUnidadAcademicaRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	return nil, nil
 }

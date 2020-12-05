@@ -12,6 +12,7 @@ type Service interface {
 	AgregarUnidadAcademica(params *addUnidadAcademicaRequest) (*models.ResultOperacion, error)
 	ObtenerUnidadAcademicaByID(param *idUnidadAcademicaRequest) (*UnidadAcademica, error)
 	ActualizarUnidadAcademicaByID(params *updateUnidadAcademicaRequest) (*models.ResultOperacion, error)
+	ObtenerTodasLasUnidadesAcademicas() ([]*UnidadAcademica, error)
 }
 
 type service struct {
@@ -62,4 +63,8 @@ func (s *service) ActualizarUnidadAcademicaByID(params *updateUnidadAcademicaReq
 		RowAffected: rowAffected,
 	}
 	return resultSms, nil
+}
+
+func (s *service) ObtenerTodasLasUnidadesAcademicas() ([]*UnidadAcademica, error) {
+	return s.repo.ObtenerTodasLasUnidadesAcademicas()
 }

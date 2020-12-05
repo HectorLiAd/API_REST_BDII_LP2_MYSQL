@@ -49,3 +49,11 @@ func makeUpdateUnidadAcademicaEndPoint(s Service) endpoint.Endpoint {
 	}
 	return updateUnidadAcademicaEndPoint
 }
+
+func makeGetAllUnidadAcademicaEndPoint(s Service) endpoint.Endpoint {
+	updateUnidadAcademicaEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		result, err := s.ObtenerTodasLasUnidadesAcademicas()
+		return result, err
+	}
+	return updateUnidadAcademicaEndPoint
+}
