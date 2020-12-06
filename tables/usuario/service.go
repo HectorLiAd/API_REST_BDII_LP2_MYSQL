@@ -3,12 +3,11 @@ package usuario
 import (
 	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/database"
 	"github.com/API_REST_BDII_LP2_MYSQL/helper"
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
-	"github.com/API_REST_BDII_LP2_MYSQL/usuariologin"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/usuariologin"
 )
 
 /*Service para los usuario*/
@@ -41,20 +40,18 @@ func (s *service) RegistrarUsuario(params *registerUserRequest) (*models.ResultO
 	if len(params.Password) < 6 {
 		return nil, errors.New("La contraseña debe contener almenos 6 caracteres")
 	}
-	return nil, nil
 	// validacaion por BD
-	cantPersona, estadoPersona, errPers := s.repo.BuscarPersonaExistente(params.PersonaID)
-	fmt.Println("Cant Personas " + strconv.Itoa(cantPersona))
-	fmt.Println("Estado " + strconv.Itoa(cantPersona))
+
+	cantPersona, estadoPersona, err := s.repo.BuscarPersona(params.PersonaID)
 	if cantPersona <= 0 {
 		return nil, errors.New("La persona al cual desea registrar, no exite")
 	}
 	if estadoPersona == 0 {
 		return nil, errors.New("La persona esta eliminado temporalmente")
 	}
-	if errPers != nil {
+	if err != nil {
 		fmt.Println("Error al en personas ")
-		return nil, errPers
+		return nil, err
 	}
 	personaCreada, errUsuarioCrea := s.repo.ChequeoUsuarioCreado(params.PersonaID)
 	if errUsuarioCrea != nil {

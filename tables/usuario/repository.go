@@ -12,7 +12,7 @@ type Repository interface {
 	ChequeoUsuarioCreado(personaID int) (int, error)
 	ChequeoEmailExisteUsuario(email string) (int, error)
 	InsertoRegistro(params *registerUserRequest) (*models.ResultOperacion, error)
-	BuscarPersonaExistente(param int) (int, int, error)
+	BuscarPersona(param int) (int, int, error)
 }
 
 type repository struct {
@@ -59,7 +59,8 @@ func (repo *repository) InsertoRegistro(params *registerUserRequest) (*models.Re
 	}, err
 }
 
-func (repo *repository) BuscarPersonaExistente(param int) (int, int, error) {
+/*BuscarPersonaExistente buscamos si la persona existe en la BD*/
+func (repo *repository) BuscarPersona(param int) (int, int, error) {
 	contResult := 0
 	estadoPersona := -1
 	const queryStr = `SELECT COUNT(*), ESTADO FROM PERSONA WHERE PERSONA_ID = ?`

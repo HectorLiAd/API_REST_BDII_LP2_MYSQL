@@ -6,11 +6,11 @@ import (
 
 	"github.com/API_REST_BDII_LP2_MYSQL/helper"
 	"github.com/API_REST_BDII_LP2_MYSQL/middlew"
-	"github.com/API_REST_BDII_LP2_MYSQL/persona"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/persona"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/tipounidad"
-	"github.com/API_REST_BDII_LP2_MYSQL/unidadacademica"
-	"github.com/API_REST_BDII_LP2_MYSQL/usuario"
-	"github.com/API_REST_BDII_LP2_MYSQL/usuariologin"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/unidadacademica"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/usuario"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/usuariologin"
 	"github.com/go-chi/chi"
 )
 
@@ -32,11 +32,11 @@ func RouterV1(db *sql.DB) http.Handler {
 		tipoUnidadService      = tipounidad.NewService(tipoUnidadRepository)
 		unidadAcademicaService = unidadacademica.NewService(unidadAcademicaRepository)
 	)
-	r.Mount("/usuario", middlew.ValidoJWT(usuario.MakeHTTPSHandler(usuarioService)))
+	r.Mount("/usuario", usuario.MakeHTTPSHandler(usuarioService))
 	r.Mount("/usuariologin", usuariologin.MakeHTTPSHandler(usuarioLoginService))
 	r.Mount("/persona", persona.MakeHTTPSHandler(personaService))
-	r.Mount("/tipoUnidad", tipounidad.MakeHTTPSHandler(tipoUnidadService))
-	r.Mount("/unidadAcademica", unidadacademica.MakeHTTPSHandler(unidadAcademicaService))
+	r.Mount("/tipoUnidad", middlew.ValidoJWT(tipounidad.MakeHTTPSHandler(tipoUnidadService)))
+	r.Mount("/unidadAcademica", middlew.ValidoJWT(unidadacademica.MakeHTTPSHandler(unidadAcademicaService)))
 
 	return r
 }

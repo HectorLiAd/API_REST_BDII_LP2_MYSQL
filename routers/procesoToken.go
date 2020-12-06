@@ -7,7 +7,7 @@ import (
 
 	"github.com/API_REST_BDII_LP2_MYSQL/database"
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
-	"github.com/API_REST_BDII_LP2_MYSQL/usuario"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/usuario"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
