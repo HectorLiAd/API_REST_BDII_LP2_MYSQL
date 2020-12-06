@@ -83,8 +83,8 @@ func updatePersonRequestDecoder(context context.Context, r *http.Request) (inter
 }
 
 func deletePersonRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-	personaID, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	personaID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	return deletePersonRequest{
 		PersonaID: personaID,
-	}, nil
+	}, err
 }

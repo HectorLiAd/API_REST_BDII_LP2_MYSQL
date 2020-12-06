@@ -12,6 +12,7 @@ import (
 type Service interface {
 	InsertarRol(param *addRolRequest) (*models.ResultOperacion, error)
 	ActualizarRol(params *updateRolRequest) (*models.ResultOperacion, error)
+	ObtenerRolByID(param *getRolByIDRequest) (*Rol, error)
 }
 
 type service struct {
@@ -43,6 +44,10 @@ func (s *service) InsertarRol(param *addRolRequest) (*models.ResultOperacion, er
 }
 
 func (s *service) ActualizarRol(params *updateRolRequest) (*models.ResultOperacion, error) {
+	params.Nombre = strings.ToUpper(params.Nombre)
+	if len(params.Nombre) < 3 {
+		return nil, errors.New("El nombre ingresado es muy corto")
+	}
 	rowAffected, errAR := s.repo.ActualizarRol(params)
 	if errAR != nil {
 		return nil, errAR
@@ -53,4 +58,12 @@ func (s *service) ActualizarRol(params *updateRolRequest) (*models.ResultOperaci
 		RowAffected: rowAffected,
 	}
 	return resultSms, nil
+}
+
+func (s *service) ObtenerRolByID(param *getRolByIDRequest) (*Rol, error) {
+	result, err := s.repo.ObtenerRolByID(param)
+	if err != nil {
+		return nil, errors.New("No se pudo obtener resultados " + err.Error())
+	}
+	return result, nil
 }

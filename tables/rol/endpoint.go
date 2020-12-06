@@ -10,6 +10,10 @@ type addRolRequest struct {
 	Nombre string
 }
 
+type getRolByIDRequest struct {
+	ID int
+}
+
 type updateRolRequest struct {
 	ID     int
 	Nombre string
@@ -28,6 +32,15 @@ func makeUpdateRolEndPoint(s Service) endpoint.Endpoint {
 	addRolEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(updateRolRequest)
 		result, err := s.ActualizarRol(trimStrUpdateRolRequest(&req))
+		return result, err
+	}
+	return addRolEndPoint
+}
+
+func makeGetRolByIDEndPoint(s Service) endpoint.Endpoint {
+	addRolEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getRolByIDRequest)
+		result, err := s.ObtenerRolByID(&req)
 		return result, err
 	}
 	return addRolEndPoint

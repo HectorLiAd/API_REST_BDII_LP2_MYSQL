@@ -8,6 +8,7 @@ import (
 type Repository interface {
 	InsertarRol(param *addRolRequest) (int64, int64, error)
 	ActualizarRol(params *updateRolRequest) (int, error)
+	ObtenerRolByID(param *getRolByIDRequest) (*Rol, error)
 }
 
 type repository struct {
@@ -43,4 +44,12 @@ func (re *repository) ActualizarRol(params *updateRolRequest) (int, error) {
 	}
 	rowAffected, err := result.RowsAffected()
 	return int(rowAffected), err
+}
+
+func (re *repository) ObtenerRolByID(param *getRolByIDRequest) (*Rol, error) {
+	const queryStr = `SELECT RU_ID, NOMBRE FROM ROL WHERE RU_ID = ?`
+	row := re.db.QueryRow(queryStr, param.ID)
+	rol := &Rol{}
+	err := row.Scan(&rol.ID, &rol.Nombre)
+	return rol, err
 }
