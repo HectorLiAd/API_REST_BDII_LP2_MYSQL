@@ -13,6 +13,7 @@ type Service interface {
 	InsertarRol(param *addRolRequest) (*models.ResultOperacion, error)
 	ActualizarRol(params *updateRolRequest) (*models.ResultOperacion, error)
 	ObtenerRolByID(param *getRolByIDRequest) (*Rol, error)
+	ObtenerTodosLosRoles() ([]*Rol, error)
 }
 
 type service struct {
@@ -66,4 +67,8 @@ func (s *service) ObtenerRolByID(param *getRolByIDRequest) (*Rol, error) {
 		return nil, errors.New("No se pudo obtener resultados " + err.Error())
 	}
 	return result, nil
+}
+
+func (s *service) ObtenerTodosLosRoles() ([]*Rol, error) {
+	return s.repo.ObtenerTodosLosRoles()
 }

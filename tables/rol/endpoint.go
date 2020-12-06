@@ -45,3 +45,10 @@ func makeGetRolByIDEndPoint(s Service) endpoint.Endpoint {
 	}
 	return addRolEndPoint
 }
+
+func makeGetAllRolEndPoint(s Service) endpoint.Endpoint {
+	addRolEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		return s.ObtenerTodosLosRoles()
+	}
+	return addRolEndPoint
+}

@@ -38,6 +38,14 @@ func MakeHTTPSHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodGet, "/{id}", getRolByIDHandler)
 
+	//Obtener todos los roles
+	getAllRolHandler := kithttp.NewServer(
+		makeGetAllRolEndPoint(s),
+		getAllRolRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodGet, "/", getAllRolHandler)
+
 	return r
 }
 
@@ -59,4 +67,8 @@ func getRolByIDRequestDecoder(context context.Context, r *http.Request) (interfa
 		ID: personaID,
 	}
 	return rol, err
+}
+
+func getAllRolRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	return nil, nil
 }

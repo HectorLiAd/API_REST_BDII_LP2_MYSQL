@@ -9,6 +9,7 @@ type Repository interface {
 	InsertarRol(param *addRolRequest) (int64, int64, error)
 	ActualizarRol(params *updateRolRequest) (int, error)
 	ObtenerRolByID(param *getRolByIDRequest) (*Rol, error)
+	ObtenerTodosLosRoles() ([]*Rol, error)
 }
 
 type repository struct {
@@ -52,4 +53,22 @@ func (re *repository) ObtenerRolByID(param *getRolByIDRequest) (*Rol, error) {
 	rol := &Rol{}
 	err := row.Scan(&rol.ID, &rol.Nombre)
 	return rol, err
+}
+
+func (re *repository) ObtenerTodosLosRoles() ([]*Rol, error) {
+	const queryStr = `SELECT RU_ID, NOMBRE FROM ROL`
+	rows, errQ := re.db.Query(queryStr)
+	if errQ != nil {
+		return nil, errQ
+	}
+	var roles []*Rol
+	for rows.Next() {
+		rol := &Rol{}
+		errS := rows.Scan(&rol.ID, &rol.Nombre)
+		if errS != nil {
+			return nil, errS
+		}
+		roles = append(roles, rol)
+	}
+	return roles, nil
 }

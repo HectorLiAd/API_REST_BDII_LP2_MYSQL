@@ -2,7 +2,6 @@ package routers
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/database"
@@ -60,7 +59,7 @@ func getClaimsToken(tokenString string) (*models.Claim, bool, error) {
 	// fmt.Println(claims.Name) POSIBLEMENTE PUEDA QUE NECESITE PARA VER QUE DATOS ME LLEGA DEL TOKEN
 	// if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 	if token.Valid {
-		fmt.Println(claims)
+		// fmt.Println(claims)
 		// fmt.Printf("%v %v", claims.Foo, claims.StandardClaims.ExpiresAt)
 		return claims, true, err
 	}
