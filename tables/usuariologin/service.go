@@ -30,7 +30,15 @@ func NewService(repo Repository) Service {
 
 /*Intento Login*/
 func (s *service) IntentoLogin(params *loginUserRequest) (*Usuario, error) {
+
 	usuario, encontrado, err := s.repo.ChequeoExisteUsuario(&params.Email)
+	if err != nil {
+		return nil, err
+	}
+	personaActivada, err := s.repo.EstadoEliminadoPersona(usuario.UsuarioID)
+	if personaActivada == 0 {
+		return nil, errors.New("Usuario temporalmente eliminado")
+	}
 	if err != nil {
 		return nil, err
 	}

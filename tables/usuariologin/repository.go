@@ -10,6 +10,7 @@ type Repository interface {
 	ChequeoExisteUsuario(email *string) (*Usuario, int, error)
 	ChequeoExisteUsuarioPersona(params *passwordResetRequest) (*Usuario, int, error)
 	ActualizarPasswordUsuario(params *Usuario) (int, error)
+	EstadoEliminadoPersona(personaID int) (int, error)
 }
 
 type repository struct {
@@ -71,4 +72,12 @@ func (repo *repository) ActualizarPasswordUsuario(params *Usuario) (int, error) 
 	}
 	cantAfectados, err := result.RowsAffected()
 	return int(cantAfectados), err
+}
+
+func (repo *repository) EstadoEliminadoPersona(personaID int) (int, error) {
+	var estado int = 0
+	const queryStr = `SELECT ESTADO FROM PERSONA WHERE PERSONA_ID = ?`
+	result := repo.db.QueryRow(queryStr, personaID)
+	err := result.Scan(&estado)
+	return estado, err
 }
