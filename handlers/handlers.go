@@ -7,7 +7,7 @@ import (
 	"github.com/API_REST_BDII_LP2_MYSQL/helper"
 	"github.com/API_REST_BDII_LP2_MYSQL/middlew"
 	"github.com/API_REST_BDII_LP2_MYSQL/persona"
-	"github.com/API_REST_BDII_LP2_MYSQL/tipounidad"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/tipounidad"
 	"github.com/API_REST_BDII_LP2_MYSQL/unidadacademica"
 	"github.com/API_REST_BDII_LP2_MYSQL/usuario"
 	"github.com/API_REST_BDII_LP2_MYSQL/usuariologin"

@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/database"
-	"github.com/API_REST_BDII_LP2_MYSQL/verionesrouter"
+	verionesrouter "github.com/API_REST_BDII_LP2_MYSQL/handlers"
 	"github.com/go-chi/chi"
 	_ "github.com/go-sql-driver/mysql"
 )
