@@ -20,8 +20,8 @@ type service struct {
 	repo Repository
 }
 
-/*NerService Permite crear un nuevo servicio teniendo una nuevo el repositorio*/
-func NerService(repo Repository) Service {
+/*NewService Permite crear un nuevo servicio teniendo una nuevo el repositorio*/
+func NewService(repo Repository) Service {
 	return &service{
 		repo: repo,
 	}
