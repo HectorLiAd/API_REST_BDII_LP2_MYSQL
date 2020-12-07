@@ -7,7 +7,7 @@ import (
 
 /*InitDB Permite hacer la conexion a la BD oracle*/
 func InitDB() *sql.DB {
-	connectionString := "u9wqag4h88nf6eng:9k7s3xgPDtGXPRYbWajd@tcp(b9i80o4lzlbmwrxkujkq-mysql.services.clever-cloud.com:3306)/b9i80o4lzlbmwrxkujkq"
+	connectionString := "pingupingu:1234567@tcp(localhost:3306)/bd-name"
 	databaseConnection, err := sql.Open("mysql", connectionString)
 	if err != nil {
 		fmt.Println("Conexion invalida a la BD")
