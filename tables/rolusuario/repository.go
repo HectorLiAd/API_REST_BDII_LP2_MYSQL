@@ -6,6 +6,7 @@ import "database/sql"
 type Repository interface {
 	AgregarRolUsuario(params *addRolUsuarioRequest) (int, int, error)
 	ObtenerRolUsuarioPorID(param *getRolUsuarioByIDRequest) (*RolUsuario, error)
+	ObtenerTodosRolUsuario() ([]*RolUsuario, error)
 }
 
 type repository struct {
@@ -39,4 +40,22 @@ func (repo *repository) ObtenerRolUsuarioPorID(param *getRolUsuarioByIDRequest) 
 	rolUsuario := &RolUsuario{}
 	err := rowRolUsuario.Scan(&rolUsuario.ID, &rolUsuario.Rol, &rolUsuario.UserName)
 	return rolUsuario, err
+}
+
+func (repo *repository) ObtenerTodosRolUsuario() ([]*RolUsuario, error) {
+	const queryStr = `SELECT * FROM VW_ROL_USUARIO`
+	rowsRolUsuario, errQ := repo.db.Query(queryStr)
+	if errQ != nil {
+		return nil, errQ
+	}
+	var rolesUsuarios []*RolUsuario
+	for rowsRolUsuario.Next() {
+		rolUsuario := &RolUsuario{}
+		errScan := rowsRolUsuario.Scan(&rolUsuario.ID, &rolUsuario.Rol, &rolUsuario.UserName)
+		if errScan != nil {
+			return nil, errScan
+		}
+		rolesUsuarios = append(rolesUsuarios, rolUsuario)
+	}
+	return rolesUsuarios, nil
 }

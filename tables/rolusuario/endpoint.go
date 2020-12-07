@@ -30,3 +30,10 @@ func makeGetRolUsuarioByIDEndpoint(s Service) endpoint.Endpoint {
 	}
 	return getRolUsuarioByIDEndpoint
 }
+
+func makeGetAllRolUsuarioEndpoint(s Service) endpoint.Endpoint {
+	getAllRolUsuarioEndpoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		return s.ObtenerTodosRolUsuario()
+	}
+	return getAllRolUsuarioEndpoint
+}

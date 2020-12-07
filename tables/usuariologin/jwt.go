@@ -13,7 +13,7 @@ func GeneroJWT(t *Usuario) (string, error) {
 	claims["email"] = t.UsuarioEmail
 	claims["nombre"] = t.UsuarioNombre
 	claims["_id"] = t.UsuarioID
-	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims) //El goritmo para encriptar "header"
 	tokenStr, err := token.SignedString(miClave)                //Firmando con el string de firma

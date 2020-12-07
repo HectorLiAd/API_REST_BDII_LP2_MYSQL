@@ -11,6 +11,7 @@ import (
 type Service interface {
 	AgregarRolUsuario(params *addRolUsuarioRequest) (*models.ResultOperacion, error)
 	ObtenerRolUsuarioPorID(param *getRolUsuarioByIDRequest) (*RolUsuario, error)
+	ObtenerTodosRolUsuario() ([]*RolUsuario, error)
 }
 
 type service struct {
@@ -41,4 +42,8 @@ func (s *service) ObtenerRolUsuarioPorID(param *getRolUsuarioByIDRequest) (*RolU
 	fmt.Println(param.ID)
 	result, err := s.repo.ObtenerRolUsuarioPorID(param)
 	return result, err
+}
+
+func (s *service) ObtenerTodosRolUsuario() ([]*RolUsuario, error) {
+	return s.repo.ObtenerTodosRolUsuario()
 }
