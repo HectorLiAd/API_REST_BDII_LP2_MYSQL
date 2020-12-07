@@ -62,9 +62,9 @@ func updateRolRequestDecoder(context context.Context, r *http.Request) (interfac
 }
 
 func getRolByIDRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-	personaID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	rolID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	rol := getRolByIDRequest{
-		ID: personaID,
+		ID: rolID,
 	}
 	return rol, err
 }
