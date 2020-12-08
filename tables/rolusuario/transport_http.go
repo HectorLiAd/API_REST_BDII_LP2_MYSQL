@@ -14,7 +14,7 @@ import (
 func MakeHTTPSHandler(s Service) http.Handler {
 	r := chi.NewRouter()
 
-	//Obtener personas por su identificador
+	//Agregar rol usuario
 	addRolUsuarioHandler := kithttp.NewServer(
 		makeAddRolUsuarioEndpoint(s),
 		addRolUsuarioRequestDecoder,

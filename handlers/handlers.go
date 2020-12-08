@@ -9,6 +9,7 @@ import (
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/persona"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/rol"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/rolusuario"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/sucursal"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/tipounidad"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/unidadacademica"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/usuario"
@@ -28,6 +29,7 @@ func RouterV1(db *sql.DB) http.Handler {
 		unidadAcademicaRepository = unidadacademica.NewRepository(db) //MARIO
 		rolRepository             = rol.NewRepository(db)             //HECTOR
 		rolUsuarioRepository      = rolusuario.NewRepository(db)      //HECTOR
+		sucursalRepository        = sucursal.NewRepository(db)        //HECTOR
 	)
 	var (
 		usuarioService         = usuario.NewService(usuarioRepository)
@@ -37,6 +39,7 @@ func RouterV1(db *sql.DB) http.Handler {
 		unidadAcademicaService = unidadacademica.NewService(unidadAcademicaRepository)
 		rolService             = rol.NewService(rolRepository)
 		rolUsuarioService      = rolusuario.NewService(rolUsuarioRepository)
+		sucursalService        = sucursal.NewService(sucursalRepository)
 	)
 	r.Mount("/usuario", usuario.MakeHTTPSHandler(usuarioService))
 	r.Mount("/usuariologin", usuariologin.MakeHTTPSHandler(usuarioLoginService))
@@ -45,6 +48,7 @@ func RouterV1(db *sql.DB) http.Handler {
 	r.Mount("/unidadAcademica", middlew.ValidoJWT(unidadacademica.MakeHTTPSHandler(unidadAcademicaService))) //PROTEGICO
 	r.Mount("/rol", middlew.ValidoJWT(rol.MakeHTTPSHandler(rolService)))                                     //PROTEGICO
 	r.Mount("/rol-usuario", middlew.ValidoJWT(rolusuario.MakeHTTPSHandler(rolUsuarioService)))               //PROTEGICO
+	r.Mount("/sucursal", middlew.ValidoJWT(sucursal.MakeHTTPSHandler(sucursalService)))                      //PROTEGICO
 
 	return r
 }

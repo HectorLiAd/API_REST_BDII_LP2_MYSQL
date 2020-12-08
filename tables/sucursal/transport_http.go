@@ -1,23 +1,56 @@
 package sucursal
 
 import (
+	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-chi/chi"
-	// kithttp "github.com/go-kit/kit/transport/http"
+	kithttp "github.com/go-kit/kit/transport/http"
 )
 
 /*MakeHTTPSHandler nos permitira ejecutar metodos de persona*/
 func MakeHTTPSHandler(s Service) http.Handler {
 	r := chi.NewRouter()
 
-	//Obtener personas por su identificador
-	// getPersonByHandler := kithttp.NewServer(
-	// 	makeGetPersonByIDEndPoint(s),
-	// 	getPersonByIDRequestDecoder,
-	// 	kithttp.EncodeJSONResponse,
-	// )
-	// r.Method(http.MethodGet, "/{id}", getPersonByHandler)
+	//Insertar sucursal
+	addSucursalHandler := kithttp.NewServer(
+		makeAddSucursalEndPoint(s),
+		addSurcursalRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodPost, "/", addSucursalHandler)
+
+	//Obtener todas las sucursales
+	getAllSucursalHandler := kithttp.NewServer(
+		makeGetAllSucursalEndPoint(s),
+		getAllSurcursalRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodGet, "/", getAllSucursalHandler)
+
+	//Actualizar sucursal
+	updateSucursalHandler := kithttp.NewServer(
+		makeUpdateSucursalEndPoint(s),
+		updateSurcursalRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodPut, "/", updateSucursalHandler)
 
 	return r
+}
+
+func addSurcursalRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	request := addSucursalRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
+	return request, err
+}
+func getAllSurcursalRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	return nil, nil
+}
+
+func updateSurcursalRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	request := updateSucursalRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
+	return request, err
 }
