@@ -18,6 +18,10 @@ type updateSucursalRequest struct {
 	Descripcion string
 }
 
+type getSucursalByIDRequest struct {
+	ID int
+}
+
 func makeAddSucursalEndPoint(s Service) endpoint.Endpoint {
 	makeAddSucursalEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(addSucursalRequest)
@@ -39,4 +43,12 @@ func makeUpdateSucursalEndPoint(s Service) endpoint.Endpoint {
 		return s.ActualizarSucursal(&req)
 	}
 	return makeUpdateSucursalEndPoint
+}
+
+func makeGetSucursalByIDEndPoint(s Service) endpoint.Endpoint {
+	makeGetSucursalByIDEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getSucursalByIDRequest)
+		return s.ObtenerSucursalPorID(&req)
+	}
+	return makeGetSucursalByIDEndPoint
 }

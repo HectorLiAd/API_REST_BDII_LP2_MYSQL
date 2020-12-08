@@ -11,6 +11,7 @@ type Service interface {
 	InsertarSucursal(params *addSucursalRequest) (*models.ResultOperacion, error)
 	ActualizarSucursal(params *updateSucursalRequest) (*models.ResultOperacion, error)
 	ObtenerTodoSucursal() ([]*Sucursal, error)
+	ObtenerSucursalPorID(param *getSucursalByIDRequest) (*Sucursal, error)
 }
 
 type service struct {
@@ -46,4 +47,8 @@ func (s *service) ActualizarSucursal(params *updateSucursalRequest) (*models.Res
 		RowAffected: rowAffected,
 	}
 	return resultMsg, err
+}
+
+func (s *service) ObtenerSucursalPorID(param *getSucursalByIDRequest) (*Sucursal, error) {
+	return s.repo.ObtenerSucursalPorID(param)
 }
