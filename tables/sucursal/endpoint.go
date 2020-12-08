@@ -11,6 +11,7 @@ type addSucursalRequest struct {
 	Direccion   string
 	Descripcion string
 }
+
 type updateSucursalRequest struct {
 	ID          int
 	Nombre      string

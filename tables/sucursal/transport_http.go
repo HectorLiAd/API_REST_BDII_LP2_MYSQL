@@ -54,6 +54,7 @@ func addSurcursalRequestDecoder(context context.Context, r *http.Request) (inter
 	err := json.NewDecoder(r.Body).Decode(&request)
 	return request, err
 }
+
 func getAllSurcursalRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	return nil, nil
 }
