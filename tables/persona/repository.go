@@ -3,6 +3,8 @@ package persona
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/API_REST_BDII_LP2_MYSQL/helper"
 )
 
 /*Repository para llamar manilpular la BD*/
@@ -37,26 +39,26 @@ func (repo *repository) GetPersonByID(param *getPersonByIDRequest) (*Person, err
 		&persona.ApellidoPaterno,
 		&persona.ApellidoMaterno,
 		&persona.Genero,
-		&persona.Dni,
+		&persona.DNI,
 		&fechaNac,
 	)
+	fecha, _ := helper.ConvStrADate(string(fechaNac))
 	// year, month, day := fecha_nac.Date()
 	// fmt.Printf("Date : [%d]year : [%d]month : [%d]day \n", year, month, day)
 	// persona.FechaNacimiento = fechaNac.Format("02/01/2006")
-	persona.FechaNacimiento = string(fechaNac)
+	persona.FechaNacimiento = fecha
 	return persona, err
 }
 
 func (repo *repository) GetPersons(params *getPersonsRequest) ([]*Person, error) {
 	const sql = `
 	SELECT PERSONA_ID, NOMBRE, APELLIDO_P, APELLIDO_M, GENERO, DNI, FECHA_NACIMIENTO
-	FROM PERSONA WHERE ESTADO <> 0 limit ? offset ?`
+	FROM PERSONA WHERE ESTADO = 1 limit ? offset ?`
 	result, err := repo.db.Query(sql, params.Limit, params.Offset)
 	var fechaNac []uint8
 	if err != nil {
 		return nil, nil
 	}
-
 	var persons []*Person
 	for result.Next() {
 		persona := &Person{}
@@ -66,13 +68,14 @@ func (repo *repository) GetPersons(params *getPersonsRequest) ([]*Person, error)
 			&persona.ApellidoPaterno,
 			&persona.ApellidoMaterno,
 			&persona.Genero,
-			&persona.Dni,
+			&persona.DNI,
 			&fechaNac,
 		)
 		if err != nil {
 			return nil, err
 		}
-		persona.FechaNacimiento = string(fechaNac)
+		fecha, _ := helper.ConvStrADate(string(fechaNac))
+		persona.FechaNacimiento = fecha
 		persons = append(persons, persona)
 	}
 	return persons, err

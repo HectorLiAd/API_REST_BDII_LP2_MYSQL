@@ -1,14 +1,16 @@
 package persona
 
+import "time"
+
 /*Person sirve para mostrar en el response*/
 type Person struct {
-	ID              int    `json:"id"`
-	Nombre          string `json:"nombre_personal"`
-	ApellidoPaterno string `json:"apellido_paterno"`
-	ApellidoMaterno string `json:"apellido_materno"`
-	Genero          string `json:"Genero"`
-	Dni             string `json:"dni"`
-	FechaNacimiento string `json:"fecha_nacimiento"`
+	ID              int       `json:"id"`
+	Nombre          string    `json:"nombre"`
+	ApellidoPaterno string    `json:"apellidoPaterno"`
+	ApellidoMaterno string    `json:"apellidoMaterno"`
+	Genero          string    `json:"genero"`
+	DNI             string    `json:"DNI"`
+	FechaNacimiento time.Time `json:"fechaDeNacimiento"`
 }
 
 /*PersonList mostrar la lista de personas*/

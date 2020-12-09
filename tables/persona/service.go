@@ -2,6 +2,7 @@ package persona
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/helper"
@@ -29,7 +30,10 @@ func NewService(repo Repository) Service {
 
 func (s *service) GetPersonByID(param *getPersonByIDRequest) (*Person, error) {
 	persona, err := s.repo.GetPersonByID(param)
-	return persona, err
+	if err != nil {
+		return nil, errors.New(fmt.Sprint("No existe el usarioa o este eliminado temporalmente ", err))
+	}
+	return persona, nil
 }
 
 func (s *service) GetPersons(params *getPersonsRequest) (*PersonList, error) {

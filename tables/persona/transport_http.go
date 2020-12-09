@@ -3,6 +3,8 @@ package persona
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -57,7 +59,10 @@ func MakeHTTPSHandler(s Service) http.Handler {
 }
 
 func getPersonByIDRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-	personaID, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	personaID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		return nil, errors.New(fmt.Sprint("El tipo ingresado no es valido ", err))
+	}
 	return getPersonByIDRequest{
 		PersonaID: personaID,
 	}, nil
@@ -86,5 +91,5 @@ func deletePersonRequestDecoder(context context.Context, r *http.Request) (inter
 	personaID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	return deletePersonRequest{
 		PersonaID: personaID,
-	}, err
+	}, errors.New(fmt.Sprint("El tipo ingresado no es valido ", err))
 }
