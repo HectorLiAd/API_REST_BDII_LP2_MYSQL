@@ -2,7 +2,6 @@ package usuario
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
 )
@@ -11,8 +10,9 @@ import (
 type Repository interface {
 	ChequeoUsuarioCreado(personaID int) (int, error)
 	ChequeoEmailExisteUsuario(email string) (int, error)
-	InsertoRegistro(params *registerUserRequest) (*models.ResultOperacion, error)
+	RegistrarUsuario(params *registerUserRequest) (*models.ResultOperacion, error)
 	BuscarPersona(param int) (int, int, error)
+	SubirImagenUsuario(imgPath string, usuarioID int) (int, error)
 }
 
 type repository struct {
@@ -42,20 +42,21 @@ func (repo *repository) ChequeoUsuarioCreado(personaID int) (int, error) {
 	return contCorreo, err
 }
 
-func (repo *repository) InsertoRegistro(params *registerUserRequest) (*models.ResultOperacion, error) {
+func (repo *repository) RegistrarUsuario(params *registerUserRequest) (*models.ResultOperacion, error) {
 	const queryStr = `INSERT INTO USUARIO(PERSONA_ID, USER_NAME, EMAIL, CLAVE, AVATAR)
 	VALUES(?, ?, ?, ?, ?)`
 
 	result, err := repo.db.Exec(queryStr, params.PersonaID, params.UserName,
 		params.Email, params.Password, params.Avatar)
 	id, er := result.LastInsertId()
-	fmt.Println(id)
 	if er != nil {
 		return nil, er
 	}
+	rowAffected, err := result.RowsAffected()
 	return &models.ResultOperacion{
-		Name:   "Usuario " + params.UserName + " registrado correctamente",
-		Codigo: int(id),
+		Name:        "Usuario " + params.UserName + " registrado correctamente",
+		Codigo:      int(id),
+		RowAffected: int(rowAffected),
 	}, err
 }
 
@@ -67,4 +68,14 @@ func (repo *repository) BuscarPersona(param int) (int, int, error) {
 	result := repo.db.QueryRow(queryStr, param)
 	err := result.Scan(&contResult, &estadoPersona)
 	return contResult, estadoPersona, err
+}
+
+func (repo *repository) SubirImagenUsuario(imgPath string, usuarioID int) (int, error) {
+	const queryStr = `UPDATE USUARIO SET AVATAR = ? WHERE PERSONA_ID = ?`
+	result, err := repo.db.Exec(queryStr, imgPath, usuarioID)
+	if err != nil {
+		return 0, err
+	}
+	rowAffected, err := result.RowsAffected()
+	return int(rowAffected), err
 }

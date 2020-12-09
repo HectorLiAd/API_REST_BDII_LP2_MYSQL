@@ -7,12 +7,15 @@ import (
 	"github.com/API_REST_BDII_LP2_MYSQL/database"
 	"github.com/API_REST_BDII_LP2_MYSQL/helper"
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
+
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/usuariologin"
 )
 
 /*Service para los usuario*/
 type Service interface {
 	RegistrarUsuario(params *registerUserRequest) (*models.ResultOperacion, error)
+	// SubirImagenUsuario(params *subirAvartarRequest) (*models.ResultOperacion, error)
+	// SubirImagenPersona(params *subirAvartarRequest) (*models.ResultOperacion, error)
 }
 
 type service struct {
@@ -79,11 +82,48 @@ func (s *service) RegistrarUsuario(params *registerUserRequest) (*models.ResultO
 	}
 	params.Password = pwdEncriptado
 
-	salidaRegistro, errInsert := s.repo.InsertoRegistro(params)
+	salidaRegistro, errInsert := s.repo.RegistrarUsuario(params)
 	return salidaRegistro, errInsert
 }
 
-// func validarEmail(email string) bool {
+// func (s *service) SubirImagenPersona(params *subirAvartarRequest) (*models.ResultOperacion, error) {
+// 	resultAfected, err := s.repo.SubirImagenUsuario(params)
+// 	if err != nil {
+// 		return nil, errors.New(fmt.Sprint("No se puedo subir la imagen ", err))
+// 	}
+// 	resultMsg := &models.ResultOperacion{
+// 		Name:        fmt.Sprint("Se guardo el avatar correctamente al usuario con el id ", params.ID),
+// 		Codigo:      params.ID,
+// 		RowAffected: resultAfected,
+// 	}
+// 	return resultMsg, nil
+// }
 
-// 	return false
+// func (s *service) SubirImagenUsuario(params *subirAvartarRequest) (*models.ResultOperacion, error) {
+// 	file := params.File
+// 	handler := params.Handler
+
+// 	var extension = strings.Split(handler.Filename, ".")[1]
+// 	var imgPath = fmt.Sprint("uploads/avatars/", userlogin.UsuarioID, ".", extension)
+// 	var archivo string = imgPath
+
+// 	f, err := os.OpenFile(archivo, os.O_WRONLY|os.O_CREATE, 0666)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	_, err = io.Copy(f, file)
+// 	var rutaImgBD string = fmt.Sprint(userlogin.UsuarioID, ".", extension)
+
+// 	rowAffected, err := s.repo.SubirImagenUsuario(rutaImgBD, userlogin.UsuarioID)
+// 	if rowAffected != 1 {
+// 		return nil, errors.New("No se pudo guardar la imagen")
+// 	}
+
+// 	resultMsg := &models.ResultOperacion{
+// 		Name:        "Se actualizo correctamente su imagen",
+// 		Codigo:      userlogin.UsuarioID,
+// 		RowAffected: rowAffected,
+// 	}
+
+// 	return resultMsg, err
 // }

@@ -2,16 +2,16 @@ package alumno
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/helper"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/persona"
 )
 
 /*Repository para llamar manilpular la BD*/
 type Repository interface {
 	AgregarPersonaAlumno(param *addAlumnoRequest) (int, int, error)
 	ExistePersonaAlumnoPorID(param *getAlumnoByIDRequest) (int, error)
-	BuscarPersonaPorID(personaID int) (*Persona, error)
+	BuscarPersonaPorID(personaID int) (*persona.Person, error)
 	ObtenerTodoPersonaAlumno() ([]*Alumno, error)
 }
 
@@ -36,20 +36,19 @@ func (repo *repository) AgregarPersonaAlumno(param *addAlumnoRequest) (int, int,
 	return param.ID, int(rowAffected), err
 }
 
-func (repo *repository) BuscarPersonaPorID(personaID int) (*Persona, error) {
+func (repo *repository) BuscarPersonaPorID(personaID int) (*persona.Person, error) {
 	queryStr := `SELECT PERSONA_ID, NOMBRE, APELLIDO_P, APELLIDO_M, GENERO, 
 	DNI, FECHA_NACIMIENTO FROM PERSONA WHERE PERSONA_ID = ? AND ESTADO = 1`
 	result := repo.db.QueryRow(queryStr, personaID)
 	var fechaUint []uint8
-	persona := &Persona{}
+	persona := &persona.Person{}
 	err := result.Scan(&persona.ID, &persona.Nombre, &persona.ApellidoPaterno,
 		&persona.ApellidoMaterno, &persona.Genero, &persona.DNI, &fechaUint)
 	if err != nil {
 		return nil, err
 	}
-	fec, err := helper.ConvStrADate(string(fechaUint))
+	fec, _ := helper.ConvStrADate(string(fechaUint))
 	persona.FechaNacimiento = fec
-	fmt.Println(persona.FechaNacimiento)
 	return persona, nil
 }
 
