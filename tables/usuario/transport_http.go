@@ -45,8 +45,7 @@ func registerUserRequestDecoder(context context.Context, r *http.Request) (inter
 func updateImagenRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	file, handler, err := r.FormFile("avatar")
 	var extension = strings.Split(handler.Filename, ".")[1]
-	var imgPath = fmt.Sprint("uploads/avatars/", userlogin.UsuarioID, ".", extension)
-	var archivo string = imgPath
+	var archivo string = fmt.Sprint("uploads/avatars/", userlogin.UsuarioID, ".jpg")
 
 	f, err := os.OpenFile(archivo, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
@@ -54,6 +53,6 @@ func updateImagenRequestDecoder(context context.Context, r *http.Request) (inter
 	}
 	_, err = io.Copy(f, file)
 	var rutaImgBD string = fmt.Sprint(userlogin.UsuarioID, ".", extension)
-
-	return subirAvartarRequest{File: rutaImgBD}, nil
+	defer f.Close()
+	return subirAvartarRequest{File: rutaImgBD}, err
 }

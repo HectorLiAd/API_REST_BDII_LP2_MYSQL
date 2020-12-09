@@ -12,7 +12,7 @@ type Repository interface {
 	ChequeoEmailExisteUsuario(email string) (int, error)
 	RegistrarUsuario(params *registerUserRequest) (*models.ResultOperacion, error)
 	BuscarPersona(param int) (int, int, error)
-	SubirImagenUsuario(imgPath string, usuarioID int) (int, error)
+	SubirImagenUsuario(param *subirAvartarRequest, usuaioID int) (int, error)
 }
 
 type repository struct {
@@ -70,9 +70,9 @@ func (repo *repository) BuscarPersona(param int) (int, int, error) {
 	return contResult, estadoPersona, err
 }
 
-func (repo *repository) SubirImagenUsuario(imgPath string, usuarioID int) (int, error) {
+func (repo *repository) SubirImagenUsuario(param *subirAvartarRequest, usuarioID int) (int, error) {
 	const queryStr = `UPDATE USUARIO SET AVATAR = ? WHERE PERSONA_ID = ?`
-	result, err := repo.db.Exec(queryStr, imgPath, usuarioID)
+	result, err := repo.db.Exec(queryStr, param.File, usuarioID)
 	if err != nil {
 		return 0, err
 	}

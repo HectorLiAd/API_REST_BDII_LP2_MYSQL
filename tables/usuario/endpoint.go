@@ -2,7 +2,6 @@ package usuario
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/go-kit/kit/endpoint"
 )
@@ -32,9 +31,7 @@ func makeRegisterUserEndPoint(s Service) endpoint.Endpoint {
 func makeSubirImagenUserEndPoint(s Service) endpoint.Endpoint {
 	subirImagenUserEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(subirAvartarRequest)
-		// result, err := s.SubirImagenUsuario(&req)
-		fmt.Println(req.File)
-		return "Se envio correctamente", nil
+		return s.SubirImagenUsuario(&req)
 	}
 	return subirImagenUserEndPoint
 }
