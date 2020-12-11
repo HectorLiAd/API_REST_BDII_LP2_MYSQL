@@ -55,7 +55,6 @@ func updateImagenRequestDecoder(context context.Context, r *http.Request) (inter
 	file, handler, err := r.FormFile("avatar")
 	var extension = strings.Split(handler.Filename, ".")[1]
 	var archivo string = fmt.Sprint("uploads/avatars/", userlogin.UsuarioID, ".jpg")
-
 	f, err := os.OpenFile(archivo, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return nil, err
