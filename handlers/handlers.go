@@ -47,9 +47,9 @@ func RouterV1(db *sql.DB) http.Handler {
 		tipoRecursoService     = tiporecurso.NewService(tipoRecursoRepository)
 		alumnoService          = alumno.NewService(alumnoRepository)
 	)
-	r.Mount("/usuario", usuario.MakeHTTPSHandler(usuarioService))
+	r.Mount("/usuario", middlew.ValidoJWT(usuario.MakeHTTPSHandler(usuarioService)))
 	r.Mount("/usuariologin", usuariologin.MakeHTTPSHandler(usuarioLoginService))
-	r.Mount("/persona", persona.MakeHTTPSHandler(personaService))
+	r.Mount("/persona", middlew.ValidoJWT(persona.MakeHTTPSHandler(personaService)))
 	r.Mount("/tipoUnidad", middlew.ValidoJWT(tipounidad.MakeHTTPSHandler(tipoUnidadService)))                //PROTEGICO
 	r.Mount("/unidadAcademica", middlew.ValidoJWT(unidadacademica.MakeHTTPSHandler(unidadAcademicaService))) //PROTEGICO
 	r.Mount("/rol", middlew.ValidoJWT(rol.MakeHTTPSHandler(rolService)))                                     //PROTEGICO
