@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	// "github.com/API_REST_BDII_LP2_MYSQL/routers"
@@ -31,7 +32,15 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		updateImagenRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPut, "/subirImagen", updateAvatarUserHandler)
+	r.Method(http.MethodPut, "/subirAvatar", updateAvatarUserHandler)
+
+	// Obtener avatar
+	getAvatarUserHandler := kithttp.NewServer(
+		makeGetImagenUserEndPoint(s),
+		getAvatarUserRequestDecoder,
+		EncodeJSONResponseFileImgUpload,
+	)
+	r.Method(http.MethodGet, "/obtenerImagen/{id}", getAvatarUserHandler)
 
 	return r
 }
@@ -55,4 +64,12 @@ func updateImagenRequestDecoder(context context.Context, r *http.Request) (inter
 	var rutaImgBD string = fmt.Sprint(userlogin.UsuarioID, ".", extension)
 	defer f.Close()
 	return subirAvartarRequest{File: rutaImgBD}, err
+}
+
+func getAvatarUserRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	usuarioID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	fmt.Println(fmt.Sprint(usuarioID, " XD"))
+	return obtenerAvatarRequest{
+		ID: usuarioID,
+	}, err
 }

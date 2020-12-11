@@ -19,6 +19,11 @@ type subirAvartarRequest struct {
 	File string
 }
 
+type obtenerAvatarRequest struct {
+	ID   int
+	File string
+}
+
 func makeRegisterUserEndPoint(s Service) endpoint.Endpoint {
 	registerUserEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(registerUserRequest)
@@ -32,6 +37,15 @@ func makeSubirImagenUserEndPoint(s Service) endpoint.Endpoint {
 	subirImagenUserEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(subirAvartarRequest)
 		return s.SubirImagenUsuario(&req)
+	}
+	return subirImagenUserEndPoint
+}
+
+func makeGetImagenUserEndPoint(s Service) endpoint.Endpoint {
+	subirImagenUserEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(obtenerAvatarRequest)
+		req.File = "20.jpg"
+		return req, nil
 	}
 	return subirImagenUserEndPoint
 }
