@@ -38,7 +38,7 @@ func (re *repository) InsertarRol(param *addRolRequest) (int64, int64, error) {
 }
 
 func (re *repository) ActualizarRol(params *updateRolRequest) (int, error) {
-	const queryStr = `UPDATE ROL SET NOMBRE = ? WHERE RU_ID = ?`
+	const queryStr = `UPDATE ROL SET NOMBRE = ? WHERE ROL_ID = ?`
 	result, err := re.db.Exec(queryStr, params.Nombre, params.ID)
 	if err != nil {
 		return 0, err
@@ -48,7 +48,7 @@ func (re *repository) ActualizarRol(params *updateRolRequest) (int, error) {
 }
 
 func (re *repository) ObtenerRolByID(param *getRolByIDRequest) (*Rol, error) {
-	const queryStr = `SELECT RU_ID, NOMBRE FROM ROL WHERE RU_ID = ?`
+	const queryStr = `SELECT ROL_ID, NOMBRE FROM ROL WHERE ROL_ID = ?`
 	row := re.db.QueryRow(queryStr, param.ID)
 	rol := &Rol{}
 	err := row.Scan(&rol.ID, &rol.Nombre)
@@ -56,7 +56,7 @@ func (re *repository) ObtenerRolByID(param *getRolByIDRequest) (*Rol, error) {
 }
 
 func (re *repository) ObtenerTodosLosRoles() ([]*Rol, error) {
-	const queryStr = `SELECT RU_ID, NOMBRE FROM ROL`
+	const queryStr = `SELECT ROL_ID, NOMBRE FROM ROL`
 	rows, errQ := re.db.Query(queryStr)
 	if errQ != nil {
 		return nil, errQ

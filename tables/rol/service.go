@@ -53,6 +53,9 @@ func (s *service) ActualizarRol(params *updateRolRequest) (*models.ResultOperaci
 	if errAR != nil {
 		return nil, errAR
 	}
+	if rowAffected != 1 {
+		return nil, errors.New("No se pudo actualizar los datos indicados, verifique que esten bien")
+	}
 	resultSms := &models.ResultOperacion{
 		Name:        "Se actualizó correctamante el rol con ID " + strconv.Itoa(params.ID) + " con el nombre " + params.Nombre,
 		Codigo:      params.ID,
