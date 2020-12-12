@@ -3,7 +3,6 @@ package persona
 import (
 	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
 
@@ -15,8 +14,8 @@ type Service interface {
 	GetPersonByID(param *getPersonByIDRequest) (*Person, error)
 	GetPersons(params *getPersonsRequest) (*PersonList, error)
 	InsertPerson(params *addPersonRequest) (*models.ResultOperacion, error)
-	UpdatePerson(params *updatePersonRequest) (*StatusPerson, error)
-	DeletePerson(param *deletePersonRequest) (*StatusPerson, error)
+	UpdatePerson(params *updatePersonRequest) (*models.ResultOperacion, error)
+	DeletePerson(param *deletePersonRequest) (*models.ResultOperacion, error)
 }
 
 type service struct {
@@ -83,7 +82,7 @@ func (s *service) InsertPerson(params *addPersonRequest) (*models.ResultOperacio
 	return resultInsert, err
 }
 
-func (s *service) UpdatePerson(params *updatePersonRequest) (*StatusPerson, error) {
+func (s *service) UpdatePerson(params *updatePersonRequest) (*models.ResultOperacion, error) {
 	//Validacion params
 	if !helper.ValidarDniStr(params.DNI) || len(params.DNI) != 8 {
 		return nil, errors.New("El DNI ingresado no es un formato valido")
@@ -99,13 +98,15 @@ func (s *service) UpdatePerson(params *updatePersonRequest) (*StatusPerson, erro
 	if rowAfected == 0 {
 		return nil, errors.New("No se pudo actualizar posiblemente el usuario no exista o los datos no se alteraron")
 	}
-	estadoInsert := StatusPerson{
-		PersonaID: "Cod " + strconv.Itoa(params.ID) + " se actualizo corractamente " + strconv.Itoa(rowAfected) + " usuario",
+	resultUpdateMsg := &models.ResultOperacion{
+		Name:        fmt.Sprint("Se actualizo correctamente a ", params.Nombre),
+		Codigo:      params.ID,
+		RowAffected: rowAfected,
 	}
-	return &estadoInsert, err
+	return resultUpdateMsg, err
 }
 
-func (s *service) DeletePerson(param *deletePersonRequest) (*StatusPerson, error) {
+func (s *service) DeletePerson(param *deletePersonRequest) (*models.ResultOperacion, error) {
 	rowAfected, err := s.repo.DeletePerson(param)
 	if err != nil {
 		return nil, err
@@ -113,9 +114,10 @@ func (s *service) DeletePerson(param *deletePersonRequest) (*StatusPerson, error
 	if rowAfected == 0 {
 		return nil, errors.New("No se pudo eliminar posiblemente el usuario no exista")
 	}
-
-	estadoInsert := StatusPerson{
-		PersonaID: "Cod " + strconv.Itoa(param.PersonaID) + " se elimino corractamente " + strconv.Itoa(rowAfected) + " usuario",
+	resultDeleteMsg := &models.ResultOperacion{
+		Name:        fmt.Sprint("Se elimino corractamente al usuario con el id ", rowAfected),
+		Codigo:      param.PersonaID,
+		RowAffected: rowAfected,
 	}
-	return &estadoInsert, err
+	return resultDeleteMsg, err
 }

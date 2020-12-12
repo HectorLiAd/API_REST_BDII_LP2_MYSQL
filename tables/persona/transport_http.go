@@ -54,7 +54,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		deletePersonRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodDelete, "/{id}", deletePersonHandler)
+	r.Method(http.MethodDelete, "/delete/{id}", deletePersonHandler)
 	return r
 }
 
@@ -89,7 +89,10 @@ func updatePersonRequestDecoder(context context.Context, r *http.Request) (inter
 
 func deletePersonRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	personaID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		return nil, errors.New(fmt.Sprint("El tipo ingresado no es valido ", err))
+	}
 	return deletePersonRequest{
 		PersonaID: personaID,
-	}, errors.New(fmt.Sprint("El tipo ingresado no es valido ", err))
+	}, nil
 }
