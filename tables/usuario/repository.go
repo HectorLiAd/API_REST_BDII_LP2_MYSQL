@@ -2,15 +2,13 @@ package usuario
 
 import (
 	"database/sql"
-
-	"github.com/API_REST_BDII_LP2_MYSQL/models"
 )
 
 /*Repository nos sirve para poder realizar consultas a la BDs*/
 type Repository interface {
 	ChequeoUsuarioCreado(personaID int) (int, error)
 	ChequeoEmailExisteUsuario(email string) (int, error)
-	RegistrarUsuario(params *registerUserRequest) (*models.ResultOperacion, error)
+	RegistrarUsuario(params *registerUserRequest) (int, error)
 	BuscarPersona(param int) (int, int, error)
 	SubirImagenUsuario(param *subirAvartarRequest, usuaioID int) (int, error)
 }
@@ -42,29 +40,24 @@ func (repo *repository) ChequeoUsuarioCreado(personaID int) (int, error) {
 	return contCorreo, err
 }
 
-func (repo *repository) RegistrarUsuario(params *registerUserRequest) (*models.ResultOperacion, error) {
-	const queryStr = `INSERT INTO USUARIO(PERSONA_ID, USER_NAME, EMAIL, CLAVE, AVATAR)
-	VALUES(?, ?, ?, ?, ?)`
+func (repo *repository) RegistrarUsuario(params *registerUserRequest) (int, error) {
+	const queryStr = `INSERT INTO USUARIO(PERSONA_ID, USER_NAME, EMAIL, CLAVE)
+	VALUES(?, ?, ?, ?)`
 
 	result, err := repo.db.Exec(queryStr, params.PersonaID, params.UserName,
-		params.Email, params.Password, params.Avatar)
-	id, er := result.LastInsertId()
-	if er != nil {
-		return nil, er
+		params.Email, params.Password)
+	if err != nil {
+		return 0, err
 	}
 	rowAffected, err := result.RowsAffected()
-	return &models.ResultOperacion{
-		Name:        "Usuario " + params.UserName + " registrado correctamente",
-		Codigo:      int(id),
-		RowAffected: int(rowAffected),
-	}, err
+	return int(rowAffected), err
 }
 
 /*BuscarPersonaExistente buscamos si la persona existe en la BD*/
 func (repo *repository) BuscarPersona(param int) (int, int, error) {
 	contResult := 0
 	estadoPersona := -1
-	const queryStr = `SELECT COUNT(*), ESTADO FROM PERSONA WHERE PERSONA_ID = ?`
+	const queryStr = `SELECT COUNT(*), ESTADO_ELIMINADO FROM PERSONA WHERE PERSONA_ID = ?`
 	result := repo.db.QueryRow(queryStr, param)
 	err := result.Scan(&contResult, &estadoPersona)
 	return contResult, estadoPersona, err

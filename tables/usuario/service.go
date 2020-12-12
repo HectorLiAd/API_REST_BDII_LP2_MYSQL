@@ -46,6 +46,9 @@ func (s *service) RegistrarUsuario(params *registerUserRequest) (*models.ResultO
 	// validacaion por BD
 
 	cantPersona, estadoPersona, err := s.repo.BuscarPersona(params.PersonaID)
+	fmt.Println(params.PersonaID)
+	fmt.Println(estadoPersona)
+	fmt.Println(cantPersona)
 	if cantPersona <= 0 {
 		return nil, errors.New("La persona al cual desea registrar, no exite")
 	}
@@ -82,8 +85,15 @@ func (s *service) RegistrarUsuario(params *registerUserRequest) (*models.ResultO
 	}
 	params.Password = pwdEncriptado
 
-	salidaRegistro, errInsert := s.repo.RegistrarUsuario(params)
-	return salidaRegistro, errInsert
+	rowAffected, errInsert := s.repo.RegistrarUsuario(params)
+
+	resultMsg := &models.ResultOperacion{
+		Name:        "Usuario " + params.UserName + " registrado correctamente",
+		Codigo:      params.PersonaID,
+		RowAffected: rowAffected,
+	}
+
+	return resultMsg, errInsert
 }
 
 func (s *service) SubirImagenUsuario(param *subirAvartarRequest) (*models.ResultOperacion, error) {

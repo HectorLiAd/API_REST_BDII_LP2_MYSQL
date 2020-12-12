@@ -3,7 +3,6 @@ package alumno
 import (
 	"database/sql"
 
-	"github.com/API_REST_BDII_LP2_MYSQL/helper"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/persona"
 )
 
@@ -47,8 +46,8 @@ func (repo *repository) BuscarPersonaPorID(personaID int) (*persona.Person, erro
 	if err != nil {
 		return nil, err
 	}
-	fec, _ := helper.ConvStrADate(string(fechaUint))
-	persona.FechaNacimiento = fec
+	// fec, _ := helper.ConvStrADate(string(fechaUint))
+	persona.FechaNacimiento = string(fechaUint)
 	return persona, nil
 }
 

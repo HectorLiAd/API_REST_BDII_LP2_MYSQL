@@ -12,7 +12,6 @@ type registerUserRequest struct {
 	UserName  string
 	Email     string
 	Password  string
-	Avatar    string
 }
 
 type subirAvartarRequest struct {

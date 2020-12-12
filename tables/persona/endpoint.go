@@ -23,24 +23,29 @@ type addPersonRequest struct { //
 	ApellidoPat string
 	ApellidoMat string
 	Genero      string
-	Dni         string
+	DNI         string
 	FechaNac    string
 }
 
 /*updatePersonRequest para poder actualizar a la persona*/
 type updatePersonRequest struct {
-	ID              int
-	Nombre          string
-	ApellidoPaterno string
-	ApellidoMaterno string
-	Genero          string
-	Dni             string
-	FechaNacimiento string
+	ID          int
+	Nombre      string
+	ApellidoPat string
+	ApellidoMat string
+	Genero      string
+	DNI         string
+	FechaNac    string
 }
 
 /*deletePersonRequest para obtener el id del body row y proceder a eliminar*/
 type deletePersonRequest struct {
 	PersonaID int
+}
+
+/*getPersonByDNIRequest el json se convierte en esta estructura para poder usarlo en el service y repository*/
+type getPersonByDNIRequest struct {
+	DNI string
 }
 
 func makeGetPersonByIDEndPoint(s Service) endpoint.Endpoint {

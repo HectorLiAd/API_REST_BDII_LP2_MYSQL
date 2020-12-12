@@ -57,7 +57,7 @@ func (s *service) GetPersons(params *getPersonsRequest) (*PersonList, error) {
 
 func (s *service) InsertPerson(params *addPersonRequest) (*models.ResultOperacion, error) {
 	//Validacion params
-	if !helper.ValidarDniStr(params.Dni) || len(params.Dni) != 8 {
+	if !helper.ValidarDniStr(params.DNI) || len(params.DNI) != 8 {
 		return nil, errors.New("El DNI ingresado no es un formato valido")
 	}
 	if !helper.ValidarDateStr(params.FechaNac) {
@@ -69,7 +69,7 @@ func (s *service) InsertPerson(params *addPersonRequest) (*models.ResultOperacio
 	//Ingresando datos a la BD y validaciones
 	personaID, rowAffected, err := s.repo.InsertPerson(params)
 	if err != nil {
-		return nil, err
+		return nil, errors.New(fmt.Sprint("Posiblemente el usuario al que desea ingresar ya existe ", err))
 	}
 	if personaID <= 0 {
 		return nil, errors.New("no se pudo registrar a la persona")
@@ -85,10 +85,10 @@ func (s *service) InsertPerson(params *addPersonRequest) (*models.ResultOperacio
 
 func (s *service) UpdatePerson(params *updatePersonRequest) (*StatusPerson, error) {
 	//Validacion params
-	if !helper.ValidarDniStr(params.Dni) || len(params.Dni) != 8 {
+	if !helper.ValidarDniStr(params.DNI) || len(params.DNI) != 8 {
 		return nil, errors.New("El DNI ingresado no es un formato valido")
 	}
-	if !helper.ValidarDateStr(params.FechaNacimiento) {
+	if !helper.ValidarDateStr(params.FechaNac) {
 		return nil, errors.New("Formato de fecha no admitido, intente YYYY/MM/DD o YYYY-MM-DD")
 	}
 	//Insertando a la BD y validando

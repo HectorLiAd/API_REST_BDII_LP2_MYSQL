@@ -22,7 +22,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getPersonByIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/{id}", getPersonByHandler)
+	r.Method(http.MethodGet, "/id/{id}", getPersonByHandler)
 
 	//Obtener personas paginadas
 	getPersonHandler := kithttp.NewServer(
@@ -46,7 +46,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		updatePersonRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPut, "/", updatePersonHandler)
+	r.Method(http.MethodPut, "/update", updatePersonHandler)
 
 	//Eliminar PERSONA
 	deletePersonHandler := kithttp.NewServer(

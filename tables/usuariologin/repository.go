@@ -76,7 +76,7 @@ func (repo *repository) ActualizarPasswordUsuario(params *Usuario) (int, error) 
 
 func (repo *repository) EstadoEliminadoPersona(personaID int) (int, error) {
 	var estado int = 0
-	const queryStr = `SELECT ESTADO FROM PERSONA WHERE PERSONA_ID = ?`
+	const queryStr = `SELECT ESTADO_ELIMINADO FROM PERSONA WHERE PERSONA_ID = ?`
 	result := repo.db.QueryRow(queryStr, personaID)
 	err := result.Scan(&estado)
 	return estado, err
