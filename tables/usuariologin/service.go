@@ -13,7 +13,7 @@ import (
 /*Service interface para crear las firmas que se usaran en el enpoint*/
 type Service interface {
 	IntentoLogin(params *loginUserRequest) (*Usuario, error)
-	LoginUsuario(params *loginUserRequest) (interface{}, error)
+	LoginUsuario(params *loginUserRequest) (*RespuestaLogin, error)
 	PasswordResetPersonaUsuario(params *passwordResetRequest) (*models.ResultOperacion, error)
 }
 
@@ -30,7 +30,6 @@ func NewService(repo Repository) Service {
 
 /*Intento Login*/
 func (s *service) IntentoLogin(params *loginUserRequest) (*Usuario, error) {
-
 	usuario, encontrado, err := s.repo.ChequeoExisteUsuario(&params.Email)
 	if err != nil {
 		return nil, err
@@ -55,21 +54,21 @@ func (s *service) IntentoLogin(params *loginUserRequest) (*Usuario, error) {
 	return usuario, nil
 }
 
-func (s *service) LoginUsuario(params *loginUserRequest) (interface{}, error) {
+func (s *service) LoginUsuario(params *loginUserRequest) (*RespuestaLogin, error) {
 	if len(params.Email) == 0 {
 		return nil, errors.New("El email del usuario es requerido")
 	}
 	usuario, err := s.IntentoLogin(params)
 	if err != nil {
-		return usuario, err
+		return nil, err
 	}
 
 	//JWT
 	jwtkey, er := GeneroJWT(usuario)
 	if er != nil {
-		return "", errors.New("El email del usuario es requerido" + er.Error())
+		return nil, errors.New("El email del usuario es requerido" + er.Error())
 	}
-	resp := RespuestaLogin{
+	resp := &RespuestaLogin{
 		Token: jwtkey,
 	}
 

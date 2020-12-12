@@ -17,7 +17,8 @@ func MakeHTTPSHandler(s Service) http.Handler {
 	loginUseHandler := kithttp.NewServer(
 		loginUserEndPoint(s),
 		loginUserRequestDecoder,
-		kithttp.EncodeJSONResponse,
+		encodeJSONResponseLogin,
+		// kithttp.EncodeJSONResponse,
 	)
 	r.Method(http.MethodPost, "/login", loginUseHandler)
 
