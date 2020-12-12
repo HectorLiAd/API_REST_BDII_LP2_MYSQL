@@ -37,7 +37,7 @@ func (repo *repository) AgregarPersonaAlumno(param *addAlumnoRequest) (int, int,
 
 func (repo *repository) BuscarPersonaPorID(personaID int) (*persona.Person, error) {
 	queryStr := `SELECT PERSONA_ID, NOMBRE, APELLIDO_P, APELLIDO_M, GENERO, 
-	DNI, FECHA_NACIMIENTO FROM PERSONA WHERE PERSONA_ID = ? AND ESTADO = 1`
+	DNI, FECHA_NACIMIENTO FROM PERSONA WHERE PERSONA_ID = ? AND ESTADO_ELIMINADO = 1`
 	result := repo.db.QueryRow(queryStr, personaID)
 	var fechaUint []uint8
 	persona := &persona.Person{}

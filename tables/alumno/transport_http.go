@@ -20,7 +20,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		addAlumnoRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPost, "/", addAlumnoHandler)
+	r.Method(http.MethodPost, "/registrar", addAlumnoHandler)
 
 	//Por tener el alumno por el ID
 	getAlumnoByIDHandler := kithttp.NewServer(
@@ -28,7 +28,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getAlumnoByIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/{id}", getAlumnoByIDHandler)
+	r.Method(http.MethodGet, "/id/{id}", getAlumnoByIDHandler)
 
 	//Obtener todas las personas
 	getAllAlumnoByIDHandler := kithttp.NewServer(
@@ -36,7 +36,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getAllAlumnoByIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/", getAllAlumnoByIDHandler)
+	r.Method(http.MethodGet, "/allAlumnos", getAllAlumnoByIDHandler)
 
 	return r
 }
