@@ -3,6 +3,7 @@ package usuariologin
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 	// "time"
@@ -14,10 +15,8 @@ func encodeJSONResponseLogin(_ context.Context, w http.ResponseWriter, request i
 
 	//Subiendo el token a la Cookie
 	expirationTime := time.Now().Add(24 * time.Hour) //
-	http.SetCookie(w, &http.Cookie{
-		Name:    "Token",
-		Value:   request.(*RespuestaLogin).Token,
-		Expires: expirationTime,
-	})
+	cookie := http.Cookie{Name: "token", Value: request.(*RespuestaLogin).Token, Expires: expirationTime}
+	http.SetCookie(w, &cookie)
+	fmt.Println(request.(*RespuestaLogin).Token)
 	return json.NewEncoder(w).Encode(request)
 }

@@ -19,12 +19,12 @@ type getPersonsRequest struct {
 
 /*addPersonRequest para crear al nuevo usuario*/
 type addPersonRequest struct { //
-	Nombre          string
-	ApellidoPaterno string
-	ApellidoMaterno string
-	Genero          string
-	Dni             string
-	FechaNacimiento string
+	Nombre      string
+	ApellidoPat string
+	ApellidoMat string
+	Genero      string
+	Dni         string
+	FechaNac    string
 }
 
 /*updatePersonRequest para poder actualizar a la persona*/

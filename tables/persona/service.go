@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/API_REST_BDII_LP2_MYSQL/models"
+
 	"github.com/API_REST_BDII_LP2_MYSQL/helper"
 )
 
@@ -12,7 +14,7 @@ import (
 type Service interface {
 	GetPersonByID(param *getPersonByIDRequest) (*Person, error)
 	GetPersons(params *getPersonsRequest) (*PersonList, error)
-	InsertPerson(params *addPersonRequest) (*StatusPerson, error)
+	InsertPerson(params *addPersonRequest) (*models.ResultOperacion, error)
 	UpdatePerson(params *updatePersonRequest) (*StatusPerson, error)
 	DeletePerson(param *deletePersonRequest) (*StatusPerson, error)
 }
@@ -53,26 +55,32 @@ func (s *service) GetPersons(params *getPersonsRequest) (*PersonList, error) {
 	}, err
 }
 
-func (s *service) InsertPerson(params *addPersonRequest) (*StatusPerson, error) {
+func (s *service) InsertPerson(params *addPersonRequest) (*models.ResultOperacion, error) {
 	//Validacion params
 	if !helper.ValidarDniStr(params.Dni) || len(params.Dni) != 8 {
 		return nil, errors.New("El DNI ingresado no es un formato valido")
 	}
-	if !helper.ValidarDateStr(params.FechaNacimiento) {
+	if !helper.ValidarDateStr(params.FechaNac) {
 		return nil, errors.New("Formato de fecha no admitido, intente YYYY/MM/DD o YYYY-MM-DD")
 	}
+	if len(params.Genero) != 1 {
+		return nil, errors.New("El genero solo admite un caractes M/F/O")
+	}
 	//Ingresando datos a la BD y validaciones
-	personaID, err := s.repo.InsertPerson(params)
+	personaID, rowAffected, err := s.repo.InsertPerson(params)
 	if err != nil {
 		return nil, err
 	}
 	if personaID <= 0 {
 		return nil, errors.New("no se pudo registrar a la persona")
 	}
-	estadoInsert := StatusPerson{
-		PersonaID: "Cod " + strconv.Itoa(personaID) + " registrado corractamente",
+
+	resultInsert := &models.ResultOperacion{
+		Name:        fmt.Sprint("Se registro correctamente a ", params.Nombre, " con el id ", personaID),
+		Codigo:      personaID,
+		RowAffected: rowAffected,
 	}
-	return &estadoInsert, err
+	return resultInsert, err
 }
 
 func (s *service) UpdatePerson(params *updatePersonRequest) (*StatusPerson, error) {

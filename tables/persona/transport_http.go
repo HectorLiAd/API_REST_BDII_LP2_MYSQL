@@ -38,7 +38,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		addPersonRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPost, "/", addPersonHandler)
+	r.Method(http.MethodPost, "/insert", addPersonHandler)
 
 	//Actualizar personas
 	updatePersonHandler := kithttp.NewServer(

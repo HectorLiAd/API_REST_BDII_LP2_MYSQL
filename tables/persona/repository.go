@@ -12,7 +12,7 @@ type Repository interface {
 	GetPersonByID(param *getPersonByIDRequest) (*Person, error)
 	GetPersons(params *getPersonsRequest) ([]*Person, error)
 	GetTotalPersons() (int, error)
-	InsertPerson(params *addPersonRequest) (int, error)
+	InsertPerson(params *addPersonRequest) (int, int, error)
 	UpdatePerson(params *updatePersonRequest) (int, error)
 	DeletePerson(param *deletePersonRequest) (int, error)
 }
@@ -90,17 +90,18 @@ func (repo *repository) GetTotalPersons() (int, error) {
 	return total, err
 }
 
-func (repo *repository) InsertPerson(params *addPersonRequest) (int, error) {
+func (repo *repository) InsertPerson(params *addPersonRequest) (int, int, error) {
 	const queryStr = `INSERT INTO PERSONA (NOMBRE, APELLIDO_P, APELLIDO_M, GENERO, DNI, FECHA_NACIMIENTO)
-						VALUES (?, ?, ?, ?, ?, ?);`
-	result, err := repo.db.Exec(queryStr, params.Nombre, params.ApellidoPaterno,
-		params.ApellidoMaterno, params.Genero, params.Dni,
-		params.FechaNacimiento)
+						VALUES (?, ?, ?, ?, ?, ?)`
+	result, err := repo.db.Exec(queryStr, params.Nombre, params.ApellidoPat,
+		params.ApellidoMat, params.Genero, params.Dni,
+		params.FechaNac)
 	if err != nil {
-		return -1, err
+		return -1, 0, err
 	}
-	id, _ := result.LastInsertId()
-	return int(id), err
+	id, err := result.LastInsertId()
+	rowAffected, err := result.RowsAffected()
+	return int(id), int(rowAffected), err
 }
 
 func (repo *repository) UpdatePerson(params *updatePersonRequest) (int, error) {
