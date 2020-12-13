@@ -53,7 +53,7 @@ func (repo *repository) ChequeoExisteUsuarioPersona(params *passwordResetRequest
 	 P.APELLIDO_M = ? AND
 	 P.FECHA_NACIMIENTO = ? AND
 	 U.EMAIL = ? AND
-	 P.ESTADO = 1 AND
+	 P.ESTADO_ELIMINADO = 1 AND
 	 U.ESTADO_ELIMINADO = 1
 	 `
 	result := repo.db.QueryRow(queryStr, params.NombrePersonal,

@@ -82,8 +82,7 @@ func (s *service) LoginUsuario(params *loginUserRequest) (*RespuestaLogin, error
 
 /*Actualizar el password del usuario*/
 func (s *service) PasswordResetPersonaUsuario(params *passwordResetRequest) (*models.ResultOperacion, error) {
-	usuario, resultPersona, err := s.repo.ChequeoExisteUsuarioPersona(params)
-	fmt.Println(resultPersona)
+	persona, resultPersona, err := s.repo.ChequeoExisteUsuarioPersona(params)
 	if resultPersona != 1 {
 		return nil, errors.New("El usuario solicitado no existe")
 	}
@@ -93,17 +92,29 @@ func (s *service) PasswordResetPersonaUsuario(params *passwordResetRequest) (*mo
 	if len(strings.TrimSpace(params.NewPassword)) < 6 {
 		return nil, errors.New("La contraseña debe contener almenos 6 caracteres")
 	}
+	/*Verificacion si la contraseña es diferente a la anterior*/
+	usuario, _, err := s.repo.ChequeoExisteUsuario(&params.Email)
+	if err != nil {
+		return nil, errors.New(fmt.Sprint("Error al querer obtener al usuario ", err))
+	}
+	passwordBytes := []byte(params.NewPassword)
+	passwordBD := []byte(usuario.UsuarioPassword)
+	if err = bcrypt.CompareHashAndPassword(passwordBD, passwordBytes); err == nil {
+		return nil, errors.New("Utilize una contraseña diferente a la anterior ")
+	}
+	/*Procesos de actualizacion de password*/
 	pwdEncriptado, err := helper.EncriptarPassword(params.NewPassword)
 	if err != nil {
 		return nil, err
 	}
-	usuario.UsuarioPassword = pwdEncriptado
-	resultUpdatePass, err := s.repo.ActualizarPasswordUsuario(usuario)
+	persona.UsuarioPassword = pwdEncriptado
+	resultUpdatePass, err := s.repo.ActualizarPasswordUsuario(persona)
 	if resultUpdatePass == 0 {
 		return nil, errors.New("No se pudo actualizar el password")
 	}
 	return &models.ResultOperacion{
-		Name:   "Usuario " + usuario.UsuarioNombre + " su password fue actualizado corractamente",
-		Codigo: usuario.UsuarioID,
+		Name:        "Usuario " + persona.UsuarioNombre + " su password fue actualizado corractamente",
+		Codigo:      persona.UsuarioID,
+		RowAffected: resultUpdatePass,
 	}, err
 }
