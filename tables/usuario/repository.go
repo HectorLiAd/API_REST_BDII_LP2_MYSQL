@@ -10,6 +10,7 @@ type Repository interface {
 	ChequeoEmailExisteUsuario(email string) (int, error)
 	RegistrarUsuario(params *registerUserRequest) (int, error)
 	BuscarPersona(param int) (int, int, error)
+	BuscarImagenUsuario(params *obtenerAvatarRequest) (*obtenerAvatarRequest, error)
 	SubirImagenUsuario(param *subirAvartarRequest, usuaioID int) (int, error)
 }
 
@@ -71,4 +72,13 @@ func (repo *repository) SubirImagenUsuario(param *subirAvartarRequest, usuarioID
 	}
 	rowAffected, err := result.RowsAffected()
 	return int(rowAffected), err
+}
+
+func (repo *repository) BuscarImagenUsuario(params *obtenerAvatarRequest) (*obtenerAvatarRequest, error) {
+	const queryStr = `SELECT AVATAR FROM USUARIO WHERE PERSONA_ID = ?`
+	result := repo.db.QueryRow(queryStr, params.ID)
+	avatarUsuario := &obtenerAvatarRequest{}
+	err := result.Scan(&avatarUsuario.File)
+	avatarUsuario.ID = params.ID
+	return avatarUsuario, err
 }

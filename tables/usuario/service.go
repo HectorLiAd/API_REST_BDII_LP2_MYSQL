@@ -16,6 +16,7 @@ import (
 type Service interface {
 	RegistrarUsuario(params *registerUserRequest) (*models.ResultOperacion, error)
 	SubirImagenUsuario(param *subirAvartarRequest) (*models.ResultOperacion, error)
+	BuscarImagenUsuario(params *obtenerAvatarRequest) (*obtenerAvatarRequest, error)
 }
 
 type service struct {
@@ -104,4 +105,8 @@ func (s *service) SubirImagenUsuario(param *subirAvartarRequest) (*models.Result
 		RowAffected: rowAffected,
 	}
 	return resultMsg, err
+}
+
+func (s *service) BuscarImagenUsuario(params *obtenerAvatarRequest) (*obtenerAvatarRequest, error) {
+	return s.repo.BuscarImagenUsuario(params)
 }

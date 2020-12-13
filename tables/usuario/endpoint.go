@@ -43,8 +43,8 @@ func makeSubirImagenUserEndPoint(s Service) endpoint.Endpoint {
 func makeGetImagenUserEndPoint(s Service) endpoint.Endpoint {
 	subirImagenUserEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(obtenerAvatarRequest)
-		req.File = "20.jpg"
-		return req, nil
+		result, err := s.BuscarImagenUsuario(&req)
+		return result, err
 	}
 	return subirImagenUserEndPoint
 }

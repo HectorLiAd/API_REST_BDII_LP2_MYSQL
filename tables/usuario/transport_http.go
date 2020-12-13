@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 
 	// "github.com/API_REST_BDII_LP2_MYSQL/routers"
 	"github.com/API_REST_BDII_LP2_MYSQL/userlogin"
@@ -52,22 +51,20 @@ func registerUserRequestDecoder(context context.Context, r *http.Request) (inter
 }
 
 func updateImagenRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-	file, handler, err := r.FormFile("avatar")
-	var extension = strings.Split(handler.Filename, ".")[1]
+	file, _ /*handler*/, err := r.FormFile("avatar")
+	// var extension = strings.Split(handler.Filename, ".")[1]
 	var archivo string = fmt.Sprint("uploads/avatars/", userlogin.UsuarioID, ".jpg")
 	f, err := os.OpenFile(archivo, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return nil, err
 	}
 	_, err = io.Copy(f, file)
-	var rutaImgBD string = fmt.Sprint(userlogin.UsuarioID, ".", extension)
 	defer f.Close()
-	return subirAvartarRequest{File: rutaImgBD}, err
+	return subirAvartarRequest{File: fmt.Sprint(userlogin.UsuarioID, ".jpg")}, err
 }
 
 func getAvatarUserRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	usuarioID, err := strconv.Atoi(chi.URLParam(r, "id"))
-	fmt.Println(fmt.Sprint(usuarioID, " XD"))
 	return obtenerAvatarRequest{
 		ID: usuarioID,
 	}, err

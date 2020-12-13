@@ -10,7 +10,7 @@ import (
 /*EncodeJSONResponseFileImgUpload sirve para poderlo usar de forma general*/
 func EncodeJSONResponseFileImgUpload(_ context.Context, w http.ResponseWriter, request interface{}) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	req := request.(obtenerAvatarRequest)
+	req := request.(*obtenerAvatarRequest)
 	openFile, err := os.Open("uploads/avatars/" + req.File)
 	if err != nil {
 		http.Error(w, "Error al abrir la imagen", http.StatusBadRequest)
