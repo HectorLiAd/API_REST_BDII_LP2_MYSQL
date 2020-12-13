@@ -20,7 +20,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		addRolUsuarioRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPost, "/", addRolUsuarioHandler)
+	r.Method(http.MethodPost, "/registrar", addRolUsuarioHandler)
 
 	//Obtener rol usario por su identificador
 	getRolUsuarioByIDHandler := kithttp.NewServer(
@@ -28,7 +28,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getRolUsuarioByIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/{id}", getRolUsuarioByIDHandler)
+	r.Method(http.MethodGet, "/id/{id}", getRolUsuarioByIDHandler)
 
 	//Obtener todos los roles de ususario
 	getAllRolUsuarioHandler := kithttp.NewServer(
@@ -36,7 +36,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getAllRolUsuarioRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/", getAllRolUsuarioHandler)
+	r.Method(http.MethodGet, "/allRolUsuario", getAllRolUsuarioHandler)
 
 	return r
 }

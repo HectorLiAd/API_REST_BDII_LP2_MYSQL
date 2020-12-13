@@ -1,7 +1,6 @@
 package rolusuario
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
@@ -26,9 +25,9 @@ func NewService(repo Repository) Service {
 }
 
 func (s *service) AgregarRolUsuario(params *addRolUsuarioRequest) (*models.ResultOperacion, error) {
-	rolUsuarioID, rowaffected, errARU := s.repo.AgregarRolUsuario(params)
-	if errARU != nil {
-		return nil, errARU
+	rolUsuarioID, rowaffected, err := s.repo.AgregarRolUsuario(params)
+	if err != nil {
+		return nil, err
 	}
 	resultSms := &models.ResultOperacion{
 		Name:        "Se agrego correctamente el rol usuario con el ID " + strconv.Itoa(rolUsuarioID),
@@ -39,7 +38,6 @@ func (s *service) AgregarRolUsuario(params *addRolUsuarioRequest) (*models.Resul
 }
 
 func (s *service) ObtenerRolUsuarioPorID(param *getRolUsuarioByIDRequest) (*RolUsuario, error) {
-	fmt.Println(param.ID)
 	result, err := s.repo.ObtenerRolUsuarioPorID(param)
 	return result, err
 }

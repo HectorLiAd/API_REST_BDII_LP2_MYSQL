@@ -1,6 +1,8 @@
 package rolusuario
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 /*Repository para llamar manilpular la BD*/
 type Repository interface {
@@ -21,10 +23,10 @@ func NewRepository(dataBaseConnection *sql.DB) Repository {
 }
 
 func (repo *repository) AgregarRolUsuario(params *addRolUsuarioRequest) (int, int, error) {
-	const queryStr = `INSERT INTO ROL_USUARIO (RU_ID, PERSONA_ID) VALUES(?, ?)`
-	result, errE := repo.db.Exec(queryStr, params.RolID, params.PersonaID)
-	if errE != nil {
-		return 0, 0, errE
+	const queryStr = `INSERT INTO ROL_USUARIO (ROL_ID, PERSONA_ID) VALUES(?, ?)`
+	result, err := repo.db.Exec(queryStr, params.RolID, params.PersonaID)
+	if err != nil {
+		return 0, 0, err
 	}
 	rolUsuarioID, errLI := result.LastInsertId()
 	if errLI != nil {
@@ -35,7 +37,7 @@ func (repo *repository) AgregarRolUsuario(params *addRolUsuarioRequest) (int, in
 }
 
 func (repo *repository) ObtenerRolUsuarioPorID(param *getRolUsuarioByIDRequest) (*RolUsuario, error) {
-	const queryStr = `SELECT * FROM VW_ROL_USUARIO WHERE RO_US_ID = ?`
+	const queryStr = `SELECT ROL_US_ID,ROL,USER_NAME FROM VW_ROL_USUARIO WHERE ROL_US_ID = ?`
 	rowRolUsuario := repo.db.QueryRow(queryStr, param.ID)
 	rolUsuario := &RolUsuario{}
 	err := rowRolUsuario.Scan(&rolUsuario.ID, &rolUsuario.Rol, &rolUsuario.UserName)
@@ -43,7 +45,7 @@ func (repo *repository) ObtenerRolUsuarioPorID(param *getRolUsuarioByIDRequest) 
 }
 
 func (repo *repository) ObtenerTodosRolUsuario() ([]*RolUsuario, error) {
-	const queryStr = `SELECT * FROM VW_ROL_USUARIO`
+	const queryStr = `SELECT ROL_US_ID,ROL,USER_NAME FROM VW_ROL_USUARIO`
 	rowsRolUsuario, errQ := repo.db.Query(queryStr)
 	if errQ != nil {
 		return nil, errQ
