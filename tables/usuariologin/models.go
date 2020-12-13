@@ -7,6 +7,7 @@ type Usuario struct {
 	UsuarioEmail    string `json:"email"`
 	UsuarioPassword string `json:"password,omitempty"`
 	UsuarioAvatar   string `json:"avatar,omitempty"`
+	Rol             string `json:"rol"`
 }
 
 /*RespuestaLogin token que será generado al iniciar sesión*/

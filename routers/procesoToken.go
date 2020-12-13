@@ -2,6 +2,7 @@ package routers
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/database"
@@ -25,6 +26,7 @@ func ProcesoToken(tk string) (*models.Claim, bool, string, error) {
 	}
 	tk = strings.TrimSpace(splitToken[1])
 	claims, isValidTkn, err := getClaimsToken(tk)
+	fmt.Println(claims)
 	if isValidTkn {
 		databaseConnection := database.InitDB()
 		defer databaseConnection.Close()

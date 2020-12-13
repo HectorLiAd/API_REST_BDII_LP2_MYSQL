@@ -51,6 +51,12 @@ func (s *service) IntentoLogin(params *loginUserRequest) (*Usuario, error) {
 	if err != nil {
 		return nil, errors.New("Usuario y/o Contraseña invalidos " + err.Error())
 	}
+	// Obtener el rol del usuario
+	rolUsuario, err := s.repo.ObtenerRolUsuario(usuario.UsuarioID)
+	if err != nil {
+		return nil, errors.New(fmt.Sprint("Error al querer obtener su rol ", err))
+	}
+	usuario.Rol = rolUsuario
 	return usuario, nil
 }
 
@@ -71,12 +77,6 @@ func (s *service) LoginUsuario(params *loginUserRequest) (*RespuestaLogin, error
 	resp := &RespuestaLogin{
 		Token: jwtkey,
 	}
-
-	// CUARGAR UNA COOKISSS DEL USUARIO PARA ACCEDER DESDE EL FRONT
-	// expirationTime := time.Now().Add(24 * time.Hour) //
-	// http.SetCookie(w, &http.Cookie{
-	// 	Name: "token",
-	// })
 	return resp, nil
 }
 

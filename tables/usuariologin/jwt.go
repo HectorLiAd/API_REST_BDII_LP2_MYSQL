@@ -12,6 +12,7 @@ func GeneroJWT(t *Usuario) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["email"] = t.UsuarioEmail
 	claims["nombre"] = t.UsuarioNombre
+	claims["rol"] = t.Rol
 	claims["_id"] = t.UsuarioID
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
