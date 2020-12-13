@@ -57,6 +57,9 @@ func (s *service) ActualizarUnidadAcademicaByID(params *updateUnidadAcademicaReq
 	if err != nil {
 		return nil, err
 	}
+	if rowAffected != 1 {
+		return nil, errors.New("No se pudo actualizar la unidad academica")
+	}
 	resultSms := &models.ResultOperacion{
 		Name:        "Se actualizo correctamente la unidad academica con el id " + strconv.Itoa(params.ID),
 		Codigo:      params.ID,

@@ -23,7 +23,7 @@ func NewRepository(dataBaseConnection *sql.DB) Repository {
 	}
 }
 func (repo *repository) AgregarUnidadAcademica(params *addUnidadAcademicaRequest) (int, int, error) {
-	const queryStr = `INSERT INTO UNIDAD_ACAD(TU_ID, NOMBRE) VALUES(? , ?)`
+	const queryStr = `INSERT INTO UNIDAD_ACAD(TIPO_U_ID, NOMBRE) VALUES(? , ?)`
 	result, err := repo.db.Exec(queryStr, params.TipoUnidadID, params.Nombre)
 	if err != nil {
 		return 0, 0, err
