@@ -20,7 +20,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		addSurcursalRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPost, "/", addSucursalHandler)
+	r.Method(http.MethodPost, "/registrar", addSucursalHandler)
 
 	//Obtener todas las sucursales
 	getAllSucursalHandler := kithttp.NewServer(
@@ -28,7 +28,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getAllSurcursalRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/", getAllSucursalHandler)
+	r.Method(http.MethodGet, "/allSucursal", getAllSucursalHandler)
 
 	//Actualizar sucursal
 	updateSucursalHandler := kithttp.NewServer(
@@ -36,7 +36,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		updateSurcursalRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPut, "/", updateSucursalHandler)
+	r.Method(http.MethodPut, "/actualizar", updateSucursalHandler)
 
 	//Obtener sucursal por id
 	getSucursaByIDlHandler := kithttp.NewServer(
@@ -44,7 +44,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getSurcursalByIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/{id}", getSucursaByIDlHandler)
+	r.Method(http.MethodGet, "/id/{id}", getSucursaByIDlHandler)
 
 	return r
 }
