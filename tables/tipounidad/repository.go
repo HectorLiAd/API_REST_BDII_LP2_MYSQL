@@ -35,7 +35,7 @@ func (repo *repository) crearTipoUnidad(params *addTipoUnidadRequest) (int, erro
 }
 
 func (repo *repository) ObtenerTodosLosTiposDeUnidad() ([]*TipoUnidad, error) {
-	const queryStr = `SELECT TU_ID, NOMBRE, DESCRIPCION FROM TIPO_UNIDAD`
+	const queryStr = `SELECT TIPO_U_ID, NOMBRE, DESCRIPCION FROM TIPO_UNIDAD`
 	result, err := repo.db.Query(queryStr)
 	var tipoUnidades []*TipoUnidad
 	for result.Next() {
@@ -56,7 +56,7 @@ func (repo *repository) ObtenerTodosLosTiposDeUnidad() ([]*TipoUnidad, error) {
 }
 
 func (repo *repository) ObtenerUnidadAcademica(unidadAcadID int) ([]*UnidadAcademica, error) {
-	const queryStr = `SELECT UNIDAD_ACAD_ID, NOMBRE FROM UNIDAD_ACAD WHERE TU_ID = ?`
+	const queryStr = `SELECT UNIDAD_ACAD_ID, NOMBRE FROM UNIDAD_ACAD WHERE TIPO_U_ID = ?`
 	result, err := repo.db.Query(queryStr, unidadAcadID)
 	var unidadesAcad []*UnidadAcademica
 	for result.Next() {
@@ -74,7 +74,7 @@ func (repo *repository) ObtenerUnidadAcademica(unidadAcadID int) ([]*UnidadAcade
 }
 
 func (repo *repository) ObtenerTipoDeUnidadByID(param *getTipoUnidadByIDRequest) (*TipoUnidad, error) {
-	const queryStr = `SELECT TU_ID, NOMBRE, DESCRIPCION FROM TIPO_UNIDAD WHERE TU_ID = ?`
+	const queryStr = `SELECT TIPO_U_ID, NOMBRE, DESCRIPCION FROM TIPO_UNIDAD WHERE TIPO_U_ID = ?`
 	row := repo.db.QueryRow(queryStr, param.ID)
 	tipoUnidad := &TipoUnidad{}
 	err := row.Scan(&tipoUnidad.ID, &tipoUnidad.Nombre, &tipoUnidad.Descripcion)
@@ -87,7 +87,7 @@ func (repo *repository) ObtenerTipoDeUnidadByID(param *getTipoUnidadByIDRequest)
 }
 
 func (repo *repository) ActualizarTipoUnidad(params *updateTipoUnidadRequest) (int, error) {
-	const queryStr = `UPDATE TIPO_UNIDAD SET NOMBRE = ?, DESCRIPCION = ? WHERE TU_ID = ?`
+	const queryStr = `UPDATE TIPO_UNIDAD SET NOMBRE = ?, DESCRIPCION = ? WHERE TIPO_U_ID = ?`
 	result, err := repo.db.Exec(queryStr, params.Nombre, params.Descripcion, params.ID)
 	if err != nil {
 		return 0, err

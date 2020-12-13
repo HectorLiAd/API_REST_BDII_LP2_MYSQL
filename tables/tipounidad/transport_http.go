@@ -3,7 +3,6 @@ package tipounidad
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -21,7 +20,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		addTipoUnidadRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPost, "/", addTipoUnidadHandler)
+	r.Method(http.MethodPost, "/registrar", addTipoUnidadHandler)
 
 	//Obtener a todos los tipos de unidad
 	getAllTipoUnidadHandler := kithttp.NewServer(
@@ -29,7 +28,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getAllTipoUnidadRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/", getAllTipoUnidadHandler)
+	r.Method(http.MethodGet, "/allTipoUnidad", getAllTipoUnidadHandler)
 
 	//Obtener tipo de unidad por id
 	getTipoUnidadByIDHandler := kithttp.NewServer(
@@ -37,7 +36,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getTipoUnidadByIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/{id}", getTipoUnidadByIDHandler)
+	r.Method(http.MethodGet, "/id/{id}", getTipoUnidadByIDHandler)
 
 	//Actualizar los datos del tipo de unidad
 	updateTipoUnidadByIDHandler := kithttp.NewServer(
@@ -45,7 +44,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		updateTipoUnidadRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPut, "/", updateTipoUnidadByIDHandler)
+	r.Method(http.MethodPut, "/actualizar", updateTipoUnidadByIDHandler)
 
 	return r
 }
@@ -55,13 +54,13 @@ func addTipoUnidadRequestDecoder(context context.Context, r *http.Request) (inte
 	err := json.NewDecoder(r.Body).Decode(&request)
 	return request, err
 }
+
 func getAllTipoUnidadRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	return nil, nil
 }
 
 func getTipoUnidadByIDRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
-	fmt.Println(id)
 	return getTipoUnidadByIDRequest{ID: id}, err
 }
 

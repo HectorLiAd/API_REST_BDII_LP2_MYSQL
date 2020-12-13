@@ -20,7 +20,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		addTipoRecursoRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPost, "/", addTipoRecursoHandler)
+	r.Method(http.MethodPost, "/registrar", addTipoRecursoHandler)
 
 	//Obtener todos los tipos de recursos
 	getAllTipoRecursoHandler := kithttp.NewServer(
@@ -28,7 +28,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getAllTipoRecursoRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/", getAllTipoRecursoHandler)
+	r.Method(http.MethodGet, "/allTipoRecurso", getAllTipoRecursoHandler)
 
 	//Obtener tipo de recurso por id
 	getTipoRecursoByIDHandler := kithttp.NewServer(
@@ -36,7 +36,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		getTipoRecursoByIDRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodGet, "/{id}", getTipoRecursoByIDHandler)
+	r.Method(http.MethodGet, "/id/{id}", getTipoRecursoByIDHandler)
 
 	//Actualizar el tipo de recurso
 	updateTipoRecursoByIDHandler := kithttp.NewServer(
@@ -44,7 +44,7 @@ func MakeHTTPSHandler(s Service) http.Handler {
 		updateTipoRecursoRequestDecoder,
 		kithttp.EncodeJSONResponse,
 	)
-	r.Method(http.MethodPut, "/", updateTipoRecursoByIDHandler)
+	r.Method(http.MethodPut, "/actualizar", updateTipoRecursoByIDHandler)
 
 	return r
 }

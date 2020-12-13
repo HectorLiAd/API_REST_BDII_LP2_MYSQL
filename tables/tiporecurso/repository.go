@@ -37,7 +37,7 @@ func (repo *repository) AgregarTipoRecurso(params *addTipoRecursoRequest) (int, 
 }
 
 func (repo *repository) ObtenerTodoTipoRecurso() ([]*TipoRecurso, error) {
-	const queryStr = `SELECT TR_ID, NOMBRE, ESTADO_CALIFICATIVO, BLOQUEAR_RECURSO FROM TIPO_RECURSO`
+	const queryStr = `SELECT TIPO_R_ID, NOMBRE, ESTADO_CALIFICATIVO, BLOQUEAR_RECURSO FROM TIPO_RECURSO`
 	result, err := repo.db.Query(queryStr)
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (repo *repository) ObtenerTodoTipoRecurso() ([]*TipoRecurso, error) {
 }
 
 func (repo *repository) ObtenerTipoRecursoPorID(param *getTipoRecursoByIDRequest) (*TipoRecurso, error) {
-	const queryStrt = `SELECT TR_ID, NOMBRE, ESTADO_CALIFICATIVO, BLOQUEAR_RECURSO FROM TIPO_RECURSO WHERE TR_ID = ?`
+	const queryStrt = `SELECT TIPO_R_ID, NOMBRE, ESTADO_CALIFICATIVO, BLOQUEAR_RECURSO FROM TIPO_RECURSO WHERE TIPO_R_ID = ?`
 	result := repo.db.QueryRow(queryStrt, param.ID)
 	tipoRecurso := &TipoRecurso{}
 	err := result.Scan(
@@ -73,7 +73,7 @@ func (repo *repository) ObtenerTipoRecursoPorID(param *getTipoRecursoByIDRequest
 }
 
 func (repo *repository) ActualizarTipoRecurso(params *updateTipoRecursoRequest) (int, error) {
-	const queryStr = `UPDATE TIPO_RECURSO SET NOMBRE = ?, ESTADO_CALIFICATIVO = ?, BLOQUEAR_RECURSO = ? WHERE TR_ID = ?`
+	const queryStr = `UPDATE TIPO_RECURSO SET NOMBRE = ?, ESTADO_CALIFICATIVO = ?, BLOQUEAR_RECURSO = ? WHERE TIPO_R_ID = ?`
 	result, err := repo.db.Exec(queryStr, params.Nombre, params.EstadoCalificativo, params.BloquearRecurso, params.ID)
 	if err != nil {
 		return 0, err
