@@ -6,6 +6,8 @@ import "database/sql"
 type Repository interface {
 	RegistrarCurso(params *addCursoRequest) (int, int, error)
 	ObtenerCursoPorID(param *getCursoByIDRequest) (*Curso, error)
+	ActualizatCursoPorID(params *updateCursoByIDRequest) (int, error)
+	ObtenerTodosLosCursos() ([]*Curso, error)
 }
 
 type repository struct {
@@ -39,4 +41,32 @@ func (repo *repository) ObtenerCursoPorID(param *getCursoByIDRequest) (*Curso, e
 	curso := &Curso{}
 	err := result.Scan(&curso.ID, &curso.Nombre, &curso.Descripcion)
 	return curso, err
+}
+
+func (repo *repository) ActualizatCursoPorID(params *updateCursoByIDRequest) (int, error) {
+	const queryStr = `UPDATE CURSO SET NOMBRE = ?, DETALLE = ? WHERE CURSO_ID = ?`
+	result, err := repo.db.Exec(queryStr, params.Nombre, params.Detalle, params.ID)
+	if err != nil {
+		return -1, err
+	}
+	rowAffected, err := result.RowsAffected()
+	return int(rowAffected), err
+}
+
+func (repo *repository) ObtenerTodosLosCursos() ([]*Curso, error) {
+	const queryStr = `SELECT CURSO_ID, NOMBRE, DETALLE FROM CURSO`
+	results, err := repo.db.Query(queryStr)
+	if err != nil {
+		return nil, err
+	}
+	var cursos []*Curso
+	for results.Next() {
+		curso := &Curso{}
+		err := results.Scan(&curso.ID, &curso.Nombre, &curso.Descripcion)
+		if err != nil {
+			return nil, err
+		}
+		cursos = append(cursos, curso)
+	}
+	return cursos, err
 }

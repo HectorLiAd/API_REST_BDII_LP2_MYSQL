@@ -16,6 +16,12 @@ type getCursoByIDRequest struct {
 	ID int
 }
 
+type updateCursoByIDRequest struct {
+	ID      int
+	Nombre  string
+	Detalle string
+}
+
 func makeAddCursoEndPoint(s Service) endpoint.Endpoint {
 	addCursoEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(addCursoRequest)
@@ -31,4 +37,19 @@ func makeGetCursoByIDEndPoint(s Service) endpoint.Endpoint {
 		return s.ObtenerCursoPorID(&req)
 	}
 	return getCursoByIDEndPoint
+}
+
+func makeUpdateCursoByIDEndPoint(s Service) endpoint.Endpoint {
+	updateCursoByIDEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(updateCursoByIDRequest)
+		return s.ActualizatCursoPorID(&req)
+	}
+	return updateCursoByIDEndPoint
+}
+
+func makeGetAllCursoEndPoint(s Service) endpoint.Endpoint {
+	getAllCursoEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		return s.ObtenerTodosLosCursos()
+	}
+	return getAllCursoEndPoint
 }

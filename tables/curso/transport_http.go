@@ -30,6 +30,22 @@ func MakeHTTPSHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodGet, "/id/{id}", getCursoByIDHandler)
 
+	// Actualizar el curso por ID
+	updateCursoByIDHandler := kithttp.NewServer(
+		makeUpdateCursoByIDEndPoint(s),
+		updateCursoRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodPut, "/actualizar", updateCursoByIDHandler)
+
+	// Obtener todos los cursos
+	getAllCursoByIDHandler := kithttp.NewServer(
+		makeGetAllCursoEndPoint(s),
+		getAllCursoRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodGet, "/allCurso", getAllCursoByIDHandler)
+
 	return r
 }
 
@@ -45,4 +61,14 @@ func getCursoByIDRequestDecoder(context context.Context, r *http.Request) (inter
 		ID: cursoID,
 	}
 	return req, err
+}
+
+func updateCursoRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	request := updateCursoByIDRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
+	return request, err
+}
+
+func getAllCursoRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	return nil, nil
 }

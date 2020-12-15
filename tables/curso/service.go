@@ -10,6 +10,8 @@ import (
 type Service interface {
 	RegistrarCurso(params *addCursoRequest) (*models.ResultOperacion, error)
 	ObtenerCursoPorID(param *getCursoByIDRequest) (*Curso, error)
+	ActualizatCursoPorID(params *updateCursoByIDRequest) (*models.ResultOperacion, error)
+	ObtenerTodosLosCursos() ([]*Curso, error)
 }
 
 type service struct {
@@ -38,4 +40,21 @@ func (serv *service) RegistrarCurso(params *addCursoRequest) (*models.ResultOper
 
 func (serv *service) ObtenerCursoPorID(param *getCursoByIDRequest) (*Curso, error) {
 	return serv.repo.ObtenerCursoPorID(param)
+}
+
+func (serv *service) ActualizatCursoPorID(params *updateCursoByIDRequest) (*models.ResultOperacion, error) {
+	rowAffected, err := serv.repo.ActualizatCursoPorID(params)
+	if err != nil {
+		return nil, err
+	}
+	resultMsg := &models.ResultOperacion{
+		Name:        fmt.Sprint("See registro correctamente el curso ", params.Nombre, " con el id ", params.ID),
+		Codigo:      params.ID,
+		RowAffected: rowAffected,
+	}
+	return resultMsg, err
+}
+
+func (serv *service) ObtenerTodosLosCursos() ([]*Curso, error) {
+	return serv.repo.ObtenerTodosLosCursos()
 }
