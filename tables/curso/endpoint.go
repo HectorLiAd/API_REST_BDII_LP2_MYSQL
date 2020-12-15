@@ -1,15 +1,34 @@
 package curso
 
-// import (
-// 	"context"
+import (
+	"context"
+	"fmt"
 
-// 	"github.com/go-kit/kit/endpoint"
-// )
+	"github.com/go-kit/kit/endpoint"
+)
 
-// func makeAddAlumnoEndPoint(s Service) endpoint.Endpoint {
-// 	addAlumnoEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
-// 		req := request.(addAlumnoRequest)
-// 		return s.AgregarPersonaAlumno(&req)
-// 	}
-// 	return addAlumnoEndPoint
-// }
+type addCursoRequest struct {
+	Nombre  string
+	Detalle string
+}
+
+type getCursoByIDRequest struct {
+	ID int
+}
+
+func makeAddCursoEndPoint(s Service) endpoint.Endpoint {
+	addCursoEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(addCursoRequest)
+		return s.RegistrarCurso(&req)
+	}
+	return addCursoEndPoint
+}
+
+func makeGetCursoByIDEndPoint(s Service) endpoint.Endpoint {
+	getCursoByIDEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getCursoByIDRequest)
+		fmt.Println(req)
+		return s.ObtenerCursoPorID(&req)
+	}
+	return getCursoByIDEndPoint
+}
