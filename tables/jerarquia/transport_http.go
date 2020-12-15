@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi"
 	kithttp "github.com/go-kit/kit/transport/http"
@@ -29,6 +30,14 @@ func MakeHTTPSHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodPost, "/agregarJerarquiaPadre", addJerarquiaParentByIDHandler)
 
+	// Buscar jerarquia padre por el ID
+	getJerarquiaParentByIDHandler := kithttp.NewServer(
+		makeGetJerarquiaParentByIDEndPoint(s),
+		getSurcursalByIDRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodGet, "/id/{id}", getJerarquiaParentByIDHandler)
+
 	return r
 }
 
@@ -44,10 +53,10 @@ func addJerarquiaParentByIDRequestDecoder(context context.Context, r *http.Reque
 	return request, err
 }
 
-// func getSurcursalByIDRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-// 	sucursalID, err := strconv.Atoi(chi.URLParam(r, "id"))
-// 	rol := getSucursalByIDRequest{
-// 		ID: sucursalID,
-// 	}
-// 	return rol, err
-// }
+func getSurcursalByIDRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	jerarquiaID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	rol := getJerarquiaByIDRequest{
+		ID: jerarquiaID,
+	}
+	return rol, err
+}

@@ -16,6 +16,10 @@ type addJerarquiParentRequest struct {
 	JerarquiaParentID int
 }
 
+type getJerarquiaByIDRequest struct {
+	ID int
+}
+
 func makeAddJerarquiaEndPoint(s Service) endpoint.Endpoint {
 	addJerarquiaEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(addJerarquiaRequest)
@@ -30,4 +34,12 @@ func makeAddJerarquiaParentByIDEndPoint(s Service) endpoint.Endpoint {
 		return s.AgregarJerarquiaPadre(&req)
 	}
 	return addJerarquiaParentByIDEndPoint
+}
+
+func makeGetJerarquiaParentByIDEndPoint(s Service) endpoint.Endpoint {
+	getJerarquiaParentByIDEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getJerarquiaByIDRequest)
+		return s.ObtenerJerarquiaPorID(&req)
+	}
+	return getJerarquiaParentByIDEndPoint
 }

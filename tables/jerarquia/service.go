@@ -1,6 +1,7 @@
 package jerarquia
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/API_REST_BDII_LP2_MYSQL/models"
@@ -10,6 +11,7 @@ import (
 type Service interface {
 	RegistrarJerarquia(params *addJerarquiaRequest) (*models.ResultOperacion, error)
 	AgregarJerarquiaPadre(params *addJerarquiParentRequest) (*models.ResultOperacion, error)
+	ObtenerJerarquiaPorID(param *getJerarquiaByIDRequest) (*Jerarquia, error)
 }
 
 type service struct {
@@ -47,4 +49,55 @@ func (s *service) AgregarJerarquiaPadre(params *addJerarquiParentRequest) (*mode
 		RowAffected: rowAffected,
 	}
 	return resultMsg, nil
+}
+
+func (s *service) ObtenerJerarquiaPorID(param *getJerarquiaByIDRequest) (*Jerarquia, error) {
+	jerarquia, err := s.ObtenerJerarquiaRecursivoPorID(param)
+	if err != nil {
+		return nil, err
+	}
+	if jerarquia.TotaJerarquiaslHijas > 0 {
+		jerarqHijosIDs, err := s.repo.ObtenerJerarquiaIDsHijos(jerarquia.ID)
+		if err != nil {
+			return nil, err
+		}
+		var jerarquias []*Jerarquia
+		for i := 0; i < len(jerarqHijosIDs); i++ {
+			param.ID = jerarqHijosIDs[i]
+			jerarquiaHija, err := s.ObtenerJerarquiaPorID(param)
+			if err != nil {
+				return nil, err
+			}
+			jerarquias = append(jerarquias, jerarquiaHija)
+		}
+		jerarquia.Jerarquia = jerarquias
+		return jerarquia, nil
+	}
+	jerarquia.JerarquiaID = 0
+	return jerarquia, err
+}
+
+func (s *service) ObtenerJerarquiaRecursivoPorID(param *getJerarquiaByIDRequest) (*Jerarquia, error) {
+	jerarquia, err := s.repo.ObtenerJerarquiaPorID(param)
+	if err != nil {
+		return nil, errors.New(fmt.Sprint("Error al consultas de la BD ", err))
+	}
+	unidadAcad, err := s.repo.ObtenerUnidadAcademicaPorID(jerarquia.UnidadacademicaID)
+	jerarquia.UnidadacademicaID = 0
+	if err != nil {
+		return nil, err
+	}
+	jerarquia.UnidadAcademica = unidadAcad
+	sucur, err := s.repo.ObtenerSucursalPorID(jerarquia.SucursalID)
+	jerarquia.SucursalID = 0
+	if err != nil {
+		return nil, err
+	}
+	jerarquia.Sucursal = sucur
+	totalHijas, err := s.repo.TotalJerarquiaHijas(jerarquia.SucursalID)
+	if err != nil {
+		return nil, err
+	}
+	jerarquia.TotaJerarquiaslHijas = totalHijas
+	return jerarquia, err
 }
