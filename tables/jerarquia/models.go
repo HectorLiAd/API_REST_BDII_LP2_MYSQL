@@ -14,5 +14,5 @@ type Jerarquia struct {
 	SucursalID           int                              `json:"sucursalID,omitempty"`
 	Jerarquia            []*Jerarquia                     `json:"jerarquiaHija,omitempty"`
 	JerarquiaID          int                              `json:"jerarquiID,omitempty"`
-	TotaJerarquiaslHijas int                              `json:"totalJerarquiaHijos"`
+	TotaJerarquiaslHijas int                              `json:"totalJerarquiaHijas"`
 }
