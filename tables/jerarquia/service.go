@@ -12,6 +12,7 @@ type Service interface {
 	RegistrarJerarquia(params *addJerarquiaRequest) (*models.ResultOperacion, error)
 	AgregarJerarquiaPadre(params *addJerarquiParentRequest) (*models.ResultOperacion, error)
 	ObtenerJerarquiaPorID(param *getJerarquiaByIDRequest) (*Jerarquia, error)
+	ObtenerTodasLasJerarquias() ([]*Jerarquia, error)
 }
 
 type service struct {
@@ -103,4 +104,22 @@ func (s *service) ObtenerJerarquiaRecursivoPorID(param *getJerarquiaByIDRequest)
 	}
 	jerarquia.TotaJerarquiaslHijas = totalHijas
 	return jerarquia, err
+}
+
+func (s *service) ObtenerTodasLasJerarquias() ([]*Jerarquia, error) {
+	jerarquiasIDs, err := s.repo.ObtenerTodasLasJerarquias()
+	if err != nil {
+		return nil, err
+	}
+	jeararquiaID := &getJerarquiaByIDRequest{}
+	var jerarquias []*Jerarquia
+	for i := 0; i < len(jerarquiasIDs); i++ {
+		jeararquiaID.ID = jerarquiasIDs[i]
+		jerarquia, err := s.ObtenerJerarquiaPorID(jeararquiaID)
+		if err != nil {
+			return nil, err
+		}
+		jerarquias = append(jerarquias, jerarquia)
+	}
+	return jerarquias, err
 }

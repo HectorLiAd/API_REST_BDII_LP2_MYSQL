@@ -18,6 +18,7 @@ type Repository interface {
 	ObtenerSucursalPorID(ID int) (*sucursal.Sucursal, error)
 	ObtenerJerarquiaIDsHijos(ID int) ([]int, error)
 	TotalJerarquiaHijas(ID int) (int, error)
+	ObtenerTodasLasJerarquias() ([]int, error)
 }
 
 type repository struct {
@@ -95,7 +96,6 @@ func (repo *repository) ObtenerJerarquiaIDsHijos(ID int) ([]int, error) {
 		}
 		jerarquiaHijosIDs = append(jerarquiaHijosIDs, jerarquiaID)
 	}
-
 	return jerarquiaHijosIDs, nil
 }
 
@@ -106,4 +106,22 @@ func (repo *repository) TotalJerarquiaHijas(ID int) (int, error) {
 	err := result.Scan(&totalJerarHijas)
 	// fmt.Println(fmt.Sprint(ID, " tiene ", totalJerarHijas))
 	return totalJerarHijas, err
+}
+
+func (repo *repository) ObtenerTodasLasJerarquias() ([]int, error) {
+	const queryStr = `SELECT JERARQUIA_ID FROM VW_JERARQUIA`
+	result, err := repo.db.Query(queryStr)
+	if err != nil {
+		return nil, err
+	}
+	var jerarquiasIDs []int
+	for result.Next() {
+		var jerarquiaID int
+		err := result.Scan(&jerarquiaID)
+		if err != nil {
+			return nil, err
+		}
+		jerarquiasIDs = append(jerarquiasIDs, jerarquiaID)
+	}
+	return jerarquiasIDs, nil
 }
