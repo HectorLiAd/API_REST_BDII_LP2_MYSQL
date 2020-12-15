@@ -104,5 +104,6 @@ func (repo *repository) TotalJerarquiaHijas(ID int) (int, error) {
 	result := repo.db.QueryRow(queryStr, ID)
 	var totalJerarHijas int
 	err := result.Scan(&totalJerarHijas)
+	// fmt.Println(fmt.Sprint(ID, " tiene ", totalJerarHijas))
 	return totalJerarHijas, err
 }

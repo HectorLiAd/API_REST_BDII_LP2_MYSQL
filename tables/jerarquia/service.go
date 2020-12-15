@@ -57,6 +57,7 @@ func (s *service) ObtenerJerarquiaPorID(param *getJerarquiaByIDRequest) (*Jerarq
 		return nil, err
 	}
 	if jerarquia.TotaJerarquiaslHijas > 0 {
+		fmt.Println("Tiene Hijas")
 		jerarqHijosIDs, err := s.repo.ObtenerJerarquiaIDsHijos(jerarquia.ID)
 		if err != nil {
 			return nil, err
@@ -71,8 +72,10 @@ func (s *service) ObtenerJerarquiaPorID(param *getJerarquiaByIDRequest) (*Jerarq
 			jerarquias = append(jerarquias, jerarquiaHija)
 		}
 		jerarquia.Jerarquia = jerarquias
+		jerarquia.JerarquiaID = 0
 		return jerarquia, nil
 	}
+	fmt.Println("Sin hijas")
 	jerarquia.JerarquiaID = 0
 	return jerarquia, err
 }
@@ -94,7 +97,7 @@ func (s *service) ObtenerJerarquiaRecursivoPorID(param *getJerarquiaByIDRequest)
 		return nil, err
 	}
 	jerarquia.Sucursal = sucur
-	totalHijas, err := s.repo.TotalJerarquiaHijas(jerarquia.SucursalID)
+	totalHijas, err := s.repo.TotalJerarquiaHijas(param.ID)
 	if err != nil {
 		return nil, err
 	}
