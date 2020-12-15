@@ -3,8 +3,12 @@ package curso
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 
 	"github.com/go-chi/chi"
 	kithttp "github.com/go-kit/kit/transport/http"
@@ -46,6 +50,22 @@ func MakeHTTPSHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodGet, "/allCurso", getAllCursoByIDHandler)
 
+	// Subir Imagen todos los cursos
+	uploadFondoCursoByIDHandler := kithttp.NewServer(
+		makeUploadImageCursoEndPoint(s),
+		uploadFondoCursoRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodPut, "/fondo/id/{id}", uploadFondoCursoByIDHandler)
+
+	// Subir Imagen todos los cursos
+	getFondoCursoByIDHandler := kithttp.NewServer(
+		makeGetFondoCursoEndPoint(s),
+		getFondoCursoRequestDecoder,
+		EncodeJSONResponseFileImgUpload,
+	)
+	r.Method(http.MethodGet, "/fondo/id/{id}", getFondoCursoByIDHandler)
+
 	return r
 }
 
@@ -71,4 +91,34 @@ func updateCursoRequestDecoder(context context.Context, r *http.Request) (interf
 
 func getAllCursoRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	return nil, nil
+}
+
+func uploadFondoCursoRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	cursoID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		return nil, err
+	}
+	file, handler, err := r.FormFile("fondo")
+	var extension = strings.Split(handler.Filename, ".")
+	archivo := fmt.Sprint("uploads/curso/fondos/", cursoID, ".", extension[len(extension)-1])
+	fmt.Println(archivo)
+	f, err := os.OpenFile(archivo, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		return nil, err
+	}
+	_, err = io.Copy(f, file)
+	defer f.Close()
+	fmt.Println("Correct")
+	return updateImagenCursoByIDRequest{
+		ID:   cursoID,
+		File: fmt.Sprint(cursoID, ".", extension[len(extension)-1]),
+	}, err
+}
+
+func getFondoCursoRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	cursoID, err := strconv.Atoi(chi.URLParam(r, "id"))
+	req := getFondoCursoByIDRequest{
+		ID: cursoID,
+	}
+	return req, err
 }

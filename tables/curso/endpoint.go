@@ -22,6 +22,16 @@ type updateCursoByIDRequest struct {
 	Detalle string
 }
 
+type updateImagenCursoByIDRequest struct {
+	ID   int
+	File string
+}
+
+type getFondoCursoByIDRequest struct {
+	ID   int
+	File string
+}
+
 func makeAddCursoEndPoint(s Service) endpoint.Endpoint {
 	addCursoEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(addCursoRequest)
@@ -52,4 +62,20 @@ func makeGetAllCursoEndPoint(s Service) endpoint.Endpoint {
 		return s.ObtenerTodosLosCursos()
 	}
 	return getAllCursoEndPoint
+}
+
+func makeUploadImageCursoEndPoint(s Service) endpoint.Endpoint {
+	getAllCursoEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(updateImagenCursoByIDRequest)
+		return s.SubirFondoCurso(&req)
+	}
+	return getAllCursoEndPoint
+}
+
+func makeGetFondoCursoEndPoint(s Service) endpoint.Endpoint {
+	getFondoCursoEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getFondoCursoByIDRequest)
+		return s.ObtenerFondoCurso(&req)
+	}
+	return getFondoCursoEndPoint
 }

@@ -12,6 +12,8 @@ type Service interface {
 	ObtenerCursoPorID(param *getCursoByIDRequest) (*Curso, error)
 	ActualizatCursoPorID(params *updateCursoByIDRequest) (*models.ResultOperacion, error)
 	ObtenerTodosLosCursos() ([]*Curso, error)
+	SubirFondoCurso(param *updateImagenCursoByIDRequest) (*models.ResultOperacion, error)
+	ObtenerFondoCurso(params *getFondoCursoByIDRequest) (*getFondoCursoByIDRequest, error)
 }
 
 type service struct {
@@ -57,4 +59,21 @@ func (serv *service) ActualizatCursoPorID(params *updateCursoByIDRequest) (*mode
 
 func (serv *service) ObtenerTodosLosCursos() ([]*Curso, error) {
 	return serv.repo.ObtenerTodosLosCursos()
+}
+
+func (serv *service) SubirFondoCurso(param *updateImagenCursoByIDRequest) (*models.ResultOperacion, error) {
+	rowAffected, err := serv.repo.SubirFondoCurso(param)
+	if err != nil {
+		return nil, err
+	}
+	resultMsg := &models.ResultOperacion{
+		Name:        fmt.Sprint("Se actualizo el fondo del curso con id ", param.ID),
+		Codigo:      param.ID,
+		RowAffected: rowAffected,
+	}
+	return resultMsg, err
+}
+
+func (serv *service) ObtenerFondoCurso(params *getFondoCursoByIDRequest) (*getFondoCursoByIDRequest, error) {
+	return serv.repo.ObtenerFondoCurso(params)
 }

@@ -8,6 +8,8 @@ type Repository interface {
 	ObtenerCursoPorID(param *getCursoByIDRequest) (*Curso, error)
 	ActualizatCursoPorID(params *updateCursoByIDRequest) (int, error)
 	ObtenerTodosLosCursos() ([]*Curso, error)
+	SubirFondoCurso(param *updateImagenCursoByIDRequest) (int, error)
+	ObtenerFondoCurso(params *getFondoCursoByIDRequest) (*getFondoCursoByIDRequest, error)
 }
 
 type repository struct {
@@ -69,4 +71,21 @@ func (repo *repository) ObtenerTodosLosCursos() ([]*Curso, error) {
 		cursos = append(cursos, curso)
 	}
 	return cursos, err
+}
+
+func (repo *repository) SubirFondoCurso(param *updateImagenCursoByIDRequest) (int, error) {
+	const queryStr = `UPDATE CURSO SET FONDO_IMG = ? WHERE CURSO_ID = ?`
+	result, err := repo.db.Exec(queryStr, param.File, param.ID)
+	if err != nil {
+		return -1, err
+	}
+	rowAffected, err := result.RowsAffected()
+	return int(rowAffected), err
+}
+
+func (repo *repository) ObtenerFondoCurso(params *getFondoCursoByIDRequest) (*getFondoCursoByIDRequest, error) {
+	const querStr = `SELECT FONDO_IMG FROM CURSO WHERE CURSO_ID = ?`
+	result := repo.db.QueryRow(querStr, params.ID)
+	err := result.Scan(&params.File)
+	return params, err
 }
