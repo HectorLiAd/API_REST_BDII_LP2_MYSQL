@@ -13,6 +13,7 @@ import (
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/periodo"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/persona"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/plan"
+	"github.com/API_REST_BDII_LP2_MYSQL/tables/plancurso"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/rol"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/rolusuario"
 	"github.com/API_REST_BDII_LP2_MYSQL/tables/sucursal"
@@ -44,6 +45,7 @@ func RouterV1(db *sql.DB) http.Handler {
 		periodoRepository         = periodo.NewRepository(db)
 		cursoRepository           = curso.NewRepository(db)
 		planRepository            = plan.NewRepository(db)
+		planCursoRepository       = plancurso.NewRepository(db)
 	)
 	var (
 		usuarioService         = usuario.NewService(usuarioRepository)
@@ -61,6 +63,7 @@ func RouterV1(db *sql.DB) http.Handler {
 		periodoService         = periodo.NewService(periodoRepository)
 		cursoService           = curso.NewService(cursoRepository)
 		planService            = plan.NewService(planRepository)
+		planCursoService       = plancurso.NewService(planCursoRepository)
 	)
 	r.Mount("/usuario", middlew.ValidoJWT(usuario.MakeHTTPSHandler(usuarioService)))
 	r.Mount("/usuariologin", usuariologin.MakeHTTPSHandler(usuarioLoginService))
@@ -77,6 +80,7 @@ func RouterV1(db *sql.DB) http.Handler {
 	r.Mount("/periodo", middlew.ValidoJWT(periodo.MakeHTTPSHandler(periodoService)))                         //PROTEGICO
 	r.Mount("/curso", middlew.ValidoJWT(curso.MakeHTTPSHandler(cursoService)))                               //PROTEGICO
 	r.Mount("/plan", middlew.ValidoJWT(plan.MakeHTTPSHandler(planService)))                                  //PROTEGICO
+	r.Mount("/planCurso", middlew.ValidoJWT(plancurso.MakeHTTPSHandler(planCursoService)))                   //PROTEGICO
 
 	return r
 }

@@ -9,6 +9,9 @@ import (
 /*Service interface para poder usarlo de forma nativa desde el main*/
 type Service interface {
 	AgregarPlanCurso(params *addPlanCursoRequest) (*models.ResultOperacion, error)
+	ObtenerPlanCursoPorID(param *getPlanCursoByIDRequest) (*PlanCurso, error)
+	ActualizarPlanCursoPorID(params *updatePlanCursoRequest) (*models.ResultOperacion, error)
+	ObtenerTodoPlanCurso() ([]*PlanCurso, error)
 }
 
 type service struct {
@@ -33,4 +36,26 @@ func (serv *service) AgregarPlanCurso(params *addPlanCursoRequest) (*models.Resu
 		RowAffected: rowAffected,
 	}
 	return resultMsg, err
+}
+
+func (serv *service) ObtenerPlanCursoPorID(param *getPlanCursoByIDRequest) (*PlanCurso, error) {
+	result, err := serv.repo.ObtenerPlanCursoPorID(param)
+	return result, err
+}
+
+func (serv *service) ActualizarPlanCursoPorID(params *updatePlanCursoRequest) (*models.ResultOperacion, error) {
+	rowAffected, err := serv.repo.ActualizarPlanCursoPorID(params)
+	if err != nil {
+		return nil, err
+	}
+	resultMsg := &models.ResultOperacion{
+		Name:        fmt.Sprint("Se actualizo correctamente el plan curso con el ID ", params.ID),
+		Codigo:      params.ID,
+		RowAffected: rowAffected,
+	}
+	return resultMsg, err
+}
+
+func (serv *service) ObtenerTodoPlanCurso() ([]*PlanCurso, error) {
+	return serv.repo.ObtenerTodoPlanCurso()
 }
