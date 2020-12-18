@@ -11,7 +11,7 @@ type Repository interface {
 	ChequeoExisteUsuarioPersona(params *passwordResetRequest) (*Usuario, int, error)
 	ActualizarPasswordUsuario(params *Usuario) (int, error)
 	EstadoEliminadoPersona(personaID int) (int, error)
-	ObtenerRolUsuario(personaID int) (string, error)
+	ObtenerRolUsuario(personaID int) ([]*string, error)
 }
 
 type repository struct {
@@ -83,10 +83,18 @@ func (repo *repository) EstadoEliminadoPersona(personaID int) (int, error) {
 	return estado, err
 }
 
-func (repo *repository) ObtenerRolUsuario(personaID int) (string, error) {
+func (repo *repository) ObtenerRolUsuario(personaID int) ([]*string, error) {
 	const queryStr = `SELECT ROL FROM VW_ROL_USUARIO WHERE PERSONA_ID = ?`
-	result := repo.db.QueryRow(queryStr, personaID)
-	var rolUsuario string
-	err := result.Scan(&rolUsuario)
+	results, err := repo.db.Query(queryStr, personaID)
+	var rolUsuario []*string
+	for results.Next() {
+		var rol *string
+		err := results.Scan(&rol)
+		if err != nil {
+			return nil, err
+		}
+		rolUsuario = append(rolUsuario, rol)
+	}
+
 	return rolUsuario, err
 }
