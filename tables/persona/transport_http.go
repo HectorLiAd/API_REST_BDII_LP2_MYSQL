@@ -70,7 +70,7 @@ func getPersonByIDRequestDecoder(context context.Context, r *http.Request) (inte
 
 func getPersonsRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	request := getPersonsRequest{}
-	err := json.NewDecoder(r.Body).Decode(&request) //EL REQUEST QUE QUEREMOS DECODIFICAR ESTA EN BADY
+	err := json.NewDecoder(r.Body).Decode(&request)
 	return request, err
 }
 
@@ -82,7 +82,6 @@ func addPersonRequestDecoder(_ context.Context, r *http.Request) (interface{}, e
 
 func updatePersonRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	request := updatePersonRequest{}
-	//LAS PROPIEDADES DEL BODY REQUEST SE MAPEAN PARA PODER OBTENER EL FORMATO DE NUESTRA ESTRUCTURA INDICADA
 	err := json.NewDecoder(r.Body).Decode(&request)
 	return request, err
 }
