@@ -79,7 +79,7 @@ func RouterV1(db *sql.DB) http.Handler {
 	r.Mount("/tipoRecurso", middlew.ValidoJWT(tiporecurso.MakeHTTPSHandler(tipoRecursoService)))             //PROTEGICO
 	r.Mount("/alumno", middlew.ValidoJWT(alumno.MakeHTTPSHandler(alumnoService)))                            //PROTEGICO
 	r.Mount("/docente", middlew.ValidoJWT(docente.MakeHTTPSHandler(docenteService)))                         //PROTEGICO
-	r.Mount("/jerarquia", middlew.ValidoJWT(jerarquia.MakeHTTPSHandler(jerarquiaService)))                   //PROTEGICO
+	r.Mount("/jerarquia", jerarquia.MakeHTTPSHandler(jerarquiaService))                                      //PROTEGICO
 	r.Mount("/periodo", middlew.ValidoJWT(periodo.MakeHTTPSHandler(periodoService)))                         //PROTEGICO
 	r.Mount("/curso", middlew.ValidoJWT(curso.MakeHTTPSHandler(cursoService)))                               //PROTEGICO
 	r.Mount("/plan", middlew.ValidoJWT(plan.MakeHTTPSHandler(planService)))                                  //PROTEGICO
