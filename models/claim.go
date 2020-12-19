@@ -8,7 +8,7 @@ import (
 type Claim struct {
 	Email string `json:"email"`
 	ID    int    `json:"_id"`
-	Rol   string `json:"rol"`
+	Rol[]   string `json:"rol"`
 	Name  string `json:"nombre"`
 	jwt.StandardClaims
 }
