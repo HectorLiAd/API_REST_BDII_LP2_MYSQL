@@ -2,6 +2,8 @@ package usuario
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 )
 
 /*Repository nos sirve para poder realizar consultas a la BDs*/
@@ -12,6 +14,7 @@ type Repository interface {
 	BuscarPersona(param int) (int, int, error)
 	BuscarImagenUsuario(params *obtenerAvatarRequest) (*obtenerAvatarRequest, error)
 	SubirImagenUsuario(param *subirAvartarRequest, usuaioID int) (int, error)
+	ObtenerTodosLosUsuarios() ([]*Usuario, error)
 }
 
 type repository struct {
@@ -81,4 +84,45 @@ func (repo *repository) BuscarImagenUsuario(params *obtenerAvatarRequest) (*obte
 	err := result.Scan(&avatarUsuario.File)
 	avatarUsuario.ID = params.ID
 	return avatarUsuario, err
+}
+
+func (repo *repository) ObtenerTodosLosUsuarios() ([]*Usuario, error) {
+	const queryStr = `SELECT PERSONA_ID, USER_NAME, EMAIL, DNI, ESTADO_PERSONA, ESTADO_USUARIO FROM VW_USUARIO`
+	results, err := repo.db.Query(queryStr)
+	if err != nil {
+		return nil, errors.New(fmt.Sprint("Error al consultar la BD ", err))
+	}
+	var usuarios []*Usuario
+	for results.Next() {
+		usuario := &Usuario{}
+		err = results.Scan(&usuario.ID, &usuario.NombreUsuario, &usuario.Email, &usuario.DNI, &usuario.EstadoPersona, &usuario.EstadoUsuario)
+		if err != nil {
+			return nil, errors.New(fmt.Sprint("Error al escanear las registros usuarios ", err))
+		}
+		rol, err := repo.ObtenerRolUsuario(usuario.ID)
+		if err != nil {
+			return nil, err
+		}
+		usuario.Rol = rol
+		usuarios = append(usuarios, usuario)
+	}
+	return usuarios, nil
+}
+
+func (repo *repository) ObtenerRolUsuario(personaID int) ([]*string, error) {
+	const queryStr = `SELECT ROL FROM VW_ROL_USUARIO WHERE PERSONA_ID = ?`
+	results, err := repo.db.Query(queryStr, personaID)
+	if err != nil {
+		return nil, errors.New(fmt.Sprint("Error la hacer la consulta en la BD ", err))
+	}
+	var roles []*string
+	for results.Next() {
+		var rol *string
+		err := results.Scan(&rol)
+		if err != nil {
+			return nil, errors.New(fmt.Sprint("Error al escanear los registros rol ", err))
+		}
+		roles = append(roles, rol)
+	}
+	return roles, nil
 }

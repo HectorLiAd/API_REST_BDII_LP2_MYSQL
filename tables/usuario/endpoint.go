@@ -48,3 +48,11 @@ func makeGetImagenUserEndPoint(s Service) endpoint.Endpoint {
 	}
 	return subirImagenUserEndPoint
 }
+
+func makeGetAllUserEndPoint(s Service) endpoint.Endpoint {
+	getAllUserEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		result, err := s.ObtenerTodosLosUsuarios()
+		return result, err
+	}
+	return getAllUserEndPoint
+}

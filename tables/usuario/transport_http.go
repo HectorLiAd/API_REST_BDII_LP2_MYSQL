@@ -41,6 +41,14 @@ func MakeHTTPSHandler(s Service) http.Handler {
 	)
 	r.Method(http.MethodGet, "/obtenerImagen/{id}", getAvatarUserHandler)
 
+	// Obtener a todos los usuarios
+	getAllUserHandler := kithttp.NewServer(
+		makeGetAllUserEndPoint(s),
+		getAllUserRequestDecoder,
+		kithttp.EncodeJSONResponse,
+	)
+	r.Method(http.MethodGet, "/allUsuario", getAllUserHandler)
+
 	return r
 }
 
@@ -68,4 +76,8 @@ func getAvatarUserRequestDecoder(context context.Context, r *http.Request) (inte
 	return obtenerAvatarRequest{
 		ID: usuarioID,
 	}, err
+}
+
+func getAllUserRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	return nil, nil
 }
